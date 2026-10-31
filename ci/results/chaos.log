@@ -390,3 +390,7 @@ test_routing_integration.py .......s                                     [100%]
 02:13:55 FAULT 5: restart a Kafka broker in A (broker 2)
 02:14:55 FAULT 6: kill regional cluster C for 45 s
 02:15:55 FAULT 7: restart the ACTIVE gateway (A)
+02:16:55 FAULT 8: restart the single Kafka node of B
+02:17:55 faults finished; restoring everything
+02:18:02 verifying data
+02:18:09 result written to /Users/ruthvikpeteti/General/Coding/bios kafka/soak/results/20261101-021809-soak.json: PASSED (0 violation(s))

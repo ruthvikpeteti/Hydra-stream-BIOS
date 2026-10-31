@@ -4,7 +4,9 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-fs = sorted((ROOT / "soak" / "results").glob("*-soak.json"))
+import sys
+
+fs = [Path(sys.argv[1])] if len(sys.argv) > 1 else sorted((ROOT / "soak" / "results").glob("*-soak.json"))
 if not fs:
     raise SystemExit("no soak result")
 r = json.loads(fs[-1].read_text())
@@ -15,7 +17,7 @@ out = [
     f"Source: `{fs[-1].name}` (`soak/soak.py`). **Result: {'PASSED' if r['passed'] else 'FAILED'}.** Duration {r['duration_min']} min on one machine (see PERFORMANCE.md for it); all faults are simulated on that machine.",
     "",
     f"Workload: {w['rate_events_per_s']} events/s (≈200-byte payloads, 24 keys, 3 partitions, asynchronous replicas in B and C), {w['acknowledged']} events acknowledged. By region: {w['acknowledged_by_region']}.",
-    f"Client-visible errors during the faults (all retried by the client, none acknowledged): {w['errors_by_code'] or 'none'}.",
+    f"Client-visible errors during the faults (each such write was NOT acknowledged; the workload simply moved on to the next event): {w['errors_by_code'] or 'none'}.",
     "",
     "## Faults injected (in this order, repeated)",
     "",

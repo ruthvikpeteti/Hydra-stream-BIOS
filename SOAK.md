@@ -3,7 +3,7 @@
 Source: `20261101-005146-soak.json` (`soak/soak.py`). **Result: PASSED.** Duration 31.7 min on one machine (see PERFORMANCE.md for it); all faults are simulated on that machine.
 
 Workload: 20.0 events/s (≈200-byte payloads, 24 keys, 3 partitions, asynchronous replicas in B and C), 36550 events acknowledged. By region: {'region-a': 35616, 'region-b': 934, 'region-c': 0}.
-Client-visible errors during the faults (all retried by the client, none acknowledged): {'ReadTimeout': 3, 'NOT_ACTIVE_REGION': 1159, 'ReadError': 45, 'ConnectError': 223}.
+Client-visible errors during the faults (each such write was NOT acknowledged; the workload simply moved on to the next event): {'ReadTimeout': 3, 'NOT_ACTIVE_REGION': 1159, 'ReadError': 45, 'ConnectError': 223}.
 
 ## Faults injected (in this order, repeated)
 
