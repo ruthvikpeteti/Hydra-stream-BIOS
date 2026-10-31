@@ -1,0 +1,134 @@
+{
+  "regions": [
+    {
+      "region_id": "region-a",
+      "legal_zone": "EU",
+      "availability_status": "AVAILABLE",
+      "storage_capacity": {
+        "total_bytes": 500000000000,
+        "used_bytes": 0
+      },
+      "processing_capabilities": [
+        "gateway",
+        "replication"
+      ],
+      "supported_transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "failure_domain": "site-a",
+      "compute_headroom": 0.7,
+      "max_replication_factor": 3,
+      "cluster_id": "kafka-a"
+    },
+    {
+      "region_id": "region-b",
+      "legal_zone": "EU",
+      "availability_status": "AVAILABLE",
+      "storage_capacity": {
+        "total_bytes": 200000000000,
+        "used_bytes": 0
+      },
+      "processing_capabilities": [
+        "gateway",
+        "replication"
+      ],
+      "supported_transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "failure_domain": "site-b",
+      "compute_headroom": 0.5,
+      "max_replication_factor": 1,
+      "cluster_id": "kafka-b"
+    },
+    {
+      "region_id": "region-c",
+      "legal_zone": "US",
+      "availability_status": "AVAILABLE",
+      "storage_capacity": {
+        "total_bytes": 200000000000,
+        "used_bytes": 0
+      },
+      "processing_capabilities": [
+        "gateway",
+        "replication"
+      ],
+      "supported_transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "failure_domain": "site-c",
+      "compute_headroom": 0.5,
+      "max_replication_factor": 1,
+      "cluster_id": "kafka-c"
+    }
+  ],
+  "links": [
+    {
+      "from_region": "region-a",
+      "to_region": "region-b",
+      "transit_zones": [
+        "EU"
+      ],
+      "latency_ms": 12,
+      "status": "UP"
+    },
+    {
+      "from_region": "region-b",
+      "to_region": "region-a",
+      "transit_zones": [
+        "EU"
+      ],
+      "latency_ms": 12,
+      "status": "UP"
+    },
+    {
+      "from_region": "region-a",
+      "to_region": "region-c",
+      "transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "latency_ms": 85,
+      "status": "UP"
+    },
+    {
+      "from_region": "region-c",
+      "to_region": "region-a",
+      "transit_zones": [
+        "US",
+        "ATLANTIC",
+        "EU"
+      ],
+      "latency_ms": 85,
+      "status": "UP"
+    },
+    {
+      "from_region": "region-b",
+      "to_region": "region-c",
+      "transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "latency_ms": 80,
+      "status": "UP"
+    },
+    {
+      "from_region": "region-c",
+      "to_region": "region-b",
+      "transit_zones": [
+        "US",
+        "ATLANTIC",
+        "EU"
+      ],
+      "latency_ms": 80,
+      "status": "UP"
+    }
+  ]
+}

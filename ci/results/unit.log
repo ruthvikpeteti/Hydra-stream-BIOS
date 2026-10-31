@@ -1,0 +1,36 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.2, pytest-9.2.0, pluggy-1.7.0
+rootdir: /Users/ruthvikpeteti/General/Coding/bios kafka/policy/tests
+plugins: hypothesis-6.170.14, anyio-4.15.1
+collected 134 items
+
+test_policy_engine.py ..................                                 [ 13%]
+test_agent_core.py ............                                          [ 22%]
+test_properties.py ...........                                           [ 30%]
+test_replication_core.py ...................                             [ 44%]
+test_routing.py ......................                                   [ 61%]
+test_dr_core.py .......................                                  [ 78%]
+test_obs.py ..........................                                   [ 97%]
+test_migrations.py ...                                                   [100%]
+
+=============================== warnings summary ===============================
+test_obs.py:9
+  /Users/ruthvikpeteti/General/Coding/bios kafka/policy/tests/test_obs.py:9: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/ruthvikpeteti/General/Coding/bios kafka/ci/results/unit-policy.xml -
+======================= 134 passed, 1 warning in 26.78s ========================
+============================= test session starts ==============================
+platform darwin -- Python 3.14.2, pytest-9.2.0, pluggy-1.7.0
+rootdir: /Users/ruthvikpeteti/General/Coding/bios kafka/gateway/tests
+plugins: anyio-4.15.1
+collected 18 items
+
+test_unit.py ...............                                             [ 83%]
+test_examples.py ...                                                     [100%]
+
+- generated xml file: /Users/ruthvikpeteti/General/Coding/bios kafka/ci/results/unit-gateway.xml -
+============================== 18 passed in 0.82s ==============================
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+JUNIT report written to /Users/ruthvikpeteti/General/Coding/bios kafka/ci/results/unit-frontend.xml

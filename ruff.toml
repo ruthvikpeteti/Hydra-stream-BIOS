@@ -1,0 +1,18 @@
+# One configuration for lint and formatting (stages 1 of CI). The code base uses long lines with aligned trailing comments.
+line-length = 160
+target-version = "py312"
+extend-exclude = ["**/.venv", "**/node_modules", "dashboard/dist"]
+
+[lint]
+select = ["E4", "E7", "E9", "F", "B006", "B008", "B015", "B018", "B904", "UP006", "UP007", "W6"]
+ignore = ["E701", "E702", "E731", "E741", "B008", "B904"]   # one-line compound statements and lambdas are used deliberately
+
+[format]
+quote-style = "double"
+
+[lint.per-file-ignores]
+"policy/tests/*.py" = ["F403", "F405"]    # the integration tests share helper modules through star imports (itest, dr_itest)
+"policy/tests/test_dr*.py" = ["F403", "F405"]
+"perf/*.py" = ["E402"]     # these scripts put the repository's packages on sys.path before importing them
+"soak/*.py" = ["E402"]
+"demo/*.py" = ["E402"]

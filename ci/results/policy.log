@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.2, pytest-9.2.0, pluggy-1.7.0
+rootdir: /Users/ruthvikpeteti/General/Coding/bios kafka/policy/tests
+plugins: hypothesis-6.170.14, anyio-4.15.1
+collected 29 items
+
+test_integration.py ...........................                          [ 93%]
+test_scenarios.py ..                                                     [100%]
+
+- generated xml file: /Users/ruthvikpeteti/General/Coding/bios kafka/ci/results/policy-enforcement.xml -
+======================== 29 passed in 95.20s (0:01:35) =========================

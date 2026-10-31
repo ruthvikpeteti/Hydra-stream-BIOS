@@ -1,0 +1,7 @@
+replicated 1 358.4 ev/s {'p50': 34.33, 'p95': 107.98, 'p99': 179.94, 'max': 374.3, 'what': 'HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)'}
+replicated 2 382.8 ev/s {'p50': 31.09, 'p95': 102.57, 'p99': 178.74, 'max': 562.23, 'what': 'HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)'}
+replicated 3 375.4 ev/s {'p50': 31.67, 'p95': 105.0, 'p99': 184.82, 'max': 616.63, 'what': 'HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)'}
+local_only 1 678.3 ev/s {'p50': 19.26, 'p95': 47.84, 'p99': 87.14, 'max': 256.1, 'what': 'HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)'}
+local_only 2 618.2 ev/s {'p50': 20.08, 'p95': 57.24, 'p99': 115.63, 'max': 308.94, 'what': 'HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)'}
+local_only 3 549.6 ev/s {'p50': 21.96, 'p95': 66.92, 'p99': 142.43, 'max': 427.67, 'what': 'HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)'}
+wrote /Users/ruthvikpeteti/General/Coding/bios kafka/perf/results/20261101-015009-throughput.json

@@ -1,0 +1,10 @@
+**/node_modules
+**/.venv
+**/__pycache__
+**/.pytest_cache
+dashboard/dist
+dashboard/test-results
+dashboard/playwright-report
+infrastructure/.env
+infrastructure/config/keys
+*.md

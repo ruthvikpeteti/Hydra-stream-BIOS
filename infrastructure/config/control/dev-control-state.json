@@ -1,0 +1,4 @@
+{
+  "default": {"active_region": "region-a", "leadership_epoch": 1, "replication_generation": 1},
+  "topics": {}
+}

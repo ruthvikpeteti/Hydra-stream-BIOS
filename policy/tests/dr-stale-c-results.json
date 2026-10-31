@@ -1,0 +1,12 @@
+{
+  "acknowledged_in_B_since_C_was_cut_off": 60,
+  "present_in_C": 0,
+  "would_have_been_lost_by_promoting_C": 60,
+  "eligibility": {
+    "region-c": [
+      "LAG_EXCEEDS_RPO"
+    ]
+  },
+  "promotion": "refused",
+  "epoch": 2
+}

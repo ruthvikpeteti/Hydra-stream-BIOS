@@ -1,0 +1,8 @@
+{
+  "_comment": "Tier 1 example: not replicated across regions; three replicas in region A with min.insync.replicas=2 (acks=all). Tolerates one broker, refuses writes with two down.",
+  "name": "ledger.local",
+  "partitions": 6,
+  "durability_mode": "LOCAL_DURABLE",
+  "local_replication_factor": 3,
+  "local_min_insync_replicas": 2
+}

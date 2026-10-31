@@ -1,0 +1,5 @@
+All checks passed!
+117 files already formatted
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+Checking formatting...
+All matched files use Prettier code style!

@@ -1,0 +1,236 @@
+{
+  "_written_at": "2026-11-01 01:50:09 +0530",
+  "environment": {
+    "docker": {
+      "containers_running": 31,
+      "cpus_available_to_containers": 10,
+      "memory_gib_available_to_containers": 7.7,
+      "os": "Docker Desktop",
+      "version": "29.9.2"
+    },
+    "gateway": {
+      "lease_ttl_ms": "6000 (dr) / 10000",
+      "producer": "aiokafka acks=all, idempotent",
+      "workers": 1
+    },
+    "host": {
+      "cpu": "Apple M4",
+      "logical_cores": 10,
+      "machine": "arm64",
+      "memory_gib": 16.0,
+      "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+      "physical_cores": "10",
+      "python_loadgen": "3.14.2"
+    },
+    "software": {
+      "etcd": "v3.5.16",
+      "kafka": "apache/kafka 3.9.0 (KRaft)",
+      "node": "v24.13.0",
+      "postgres": "16-alpine",
+      "toxiproxy": "2.9.0"
+    },
+    "topology": {
+      "note": "all regions, the coordinator, PostgreSQL and the load generator share ONE machine and one Docker VM",
+      "region_a": "3 controllers + 3 brokers, RF1 for replicated topics (RF3/min ISR 2 only for local topics)",
+      "region_b": "1 combined node, RF1",
+      "region_c": "1 combined node, RF1"
+    }
+  },
+  "local_only": [
+    {
+      "acknowledged": 20350,
+      "client_ack_latency_ms": {
+        "max": 256.1,
+        "p50": 19.26,
+        "p95": 47.84,
+        "p99": 87.14,
+        "what": "HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)"
+      },
+      "concurrency": 16,
+      "duration_s": 30.0,
+      "errors": {},
+      "gateway_ack_latency_s_bucket_bound": {
+        "p50": 0.01,
+        "p95": 0.01,
+        "p99": 0.01,
+        "what": "upper bound of the histogram bucket holding the quantile (includes warmup requests); gateway-side acks=all send only"
+      },
+      "payload_bytes": 1024,
+      "target_rate": null,
+      "throughput_events_per_s": 678.3,
+      "throughput_payload_KiB_per_s": 678.3,
+      "warmup_s": 5.0
+    },
+    {
+      "acknowledged": 18546,
+      "client_ack_latency_ms": {
+        "max": 308.94,
+        "p50": 20.08,
+        "p95": 57.24,
+        "p99": 115.63,
+        "what": "HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)"
+      },
+      "concurrency": 16,
+      "duration_s": 30.0,
+      "errors": {},
+      "gateway_ack_latency_s_bucket_bound": {
+        "p50": 0.01,
+        "p95": 0.01,
+        "p99": 0.025,
+        "what": "upper bound of the histogram bucket holding the quantile (includes warmup requests); gateway-side acks=all send only"
+      },
+      "payload_bytes": 1024,
+      "target_rate": null,
+      "throughput_events_per_s": 618.2,
+      "throughput_payload_KiB_per_s": 618.2,
+      "warmup_s": 5.0
+    },
+    {
+      "acknowledged": 16489,
+      "client_ack_latency_ms": {
+        "max": 427.67,
+        "p50": 21.96,
+        "p95": 66.92,
+        "p99": 142.43,
+        "what": "HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)"
+      },
+      "concurrency": 16,
+      "duration_s": 30.0,
+      "errors": {},
+      "gateway_ack_latency_s_bucket_bound": {
+        "p50": 0.01,
+        "p95": 0.01,
+        "p99": 0.025,
+        "what": "upper bound of the histogram bucket holding the quantile (includes warmup requests); gateway-side acks=all send only"
+      },
+      "payload_bytes": 1024,
+      "target_rate": null,
+      "throughput_events_per_s": 549.6,
+      "throughput_payload_KiB_per_s": 549.6,
+      "warmup_s": 5.0
+    }
+  ],
+  "local_only_summary": {
+    "max_throughput_events_per_s": 678.3,
+    "median_p50_ms": 20.08,
+    "median_p95_ms": 57.24,
+    "median_p99_ms": 115.63,
+    "median_throughput_events_per_s": 618.2,
+    "min_throughput_events_per_s": 549.6
+  },
+  "replicated": [
+    {
+      "acknowledged": 10752,
+      "catch_up_after_load_s": 3.17,
+      "client_ack_latency_ms": {
+        "max": 374.3,
+        "p50": 34.33,
+        "p95": 107.98,
+        "p99": 179.94,
+        "what": "HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)"
+      },
+      "concurrency": 16,
+      "duration_s": 30.0,
+      "errors": {},
+      "gateway_ack_latency_s_bucket_bound": {
+        "p50": 0.01,
+        "p95": 0.025,
+        "p99": 0.025,
+        "what": "upper bound of the histogram bucket holding the quantile (includes warmup requests); gateway-side acks=all send only"
+      },
+      "payload_bytes": 1024,
+      "replication_lag_during_load": {
+        "max_backlog_bytes": 35783,
+        "max_backlog_records": 27,
+        "max_estimated_drain_s": 0.25,
+        "median_backlog_records": 18,
+        "samples": 35
+      },
+      "target_rate": null,
+      "throughput_events_per_s": 358.4,
+      "throughput_payload_KiB_per_s": 358.4,
+      "warmup_s": 5.0
+    },
+    {
+      "acknowledged": 11483,
+      "catch_up_after_load_s": 2.11,
+      "client_ack_latency_ms": {
+        "max": 562.23,
+        "p50": 31.09,
+        "p95": 102.57,
+        "p99": 178.74,
+        "what": "HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)"
+      },
+      "concurrency": 16,
+      "duration_s": 30.0,
+      "errors": {},
+      "gateway_ack_latency_s_bucket_bound": {
+        "p50": 0.01,
+        "p95": 0.01,
+        "p99": 0.025,
+        "what": "upper bound of the histogram bucket holding the quantile (includes warmup requests); gateway-side acks=all send only"
+      },
+      "payload_bytes": 1024,
+      "replication_lag_during_load": {
+        "max_backlog_bytes": 630990,
+        "max_backlog_records": 476,
+        "max_estimated_drain_s": 0.63,
+        "median_backlog_records": 20,
+        "samples": 35
+      },
+      "target_rate": null,
+      "throughput_events_per_s": 382.8,
+      "throughput_payload_KiB_per_s": 382.8,
+      "warmup_s": 5.0
+    },
+    {
+      "acknowledged": 11261,
+      "catch_up_after_load_s": 3.17,
+      "client_ack_latency_ms": {
+        "max": 616.63,
+        "p50": 31.67,
+        "p95": 105.0,
+        "p99": 184.82,
+        "what": "HTTP request to the gateway until the 200 (includes the acks=all Kafka acknowledgement)"
+      },
+      "concurrency": 16,
+      "duration_s": 30.0,
+      "errors": {},
+      "gateway_ack_latency_s_bucket_bound": {
+        "p50": 0.01,
+        "p95": 0.025,
+        "p99": 0.025,
+        "what": "upper bound of the histogram bucket holding the quantile (includes warmup requests); gateway-side acks=all send only"
+      },
+      "payload_bytes": 1024,
+      "replication_lag_during_load": {
+        "max_backlog_bytes": 47721,
+        "max_backlog_records": 36,
+        "max_estimated_drain_s": 0.03,
+        "median_backlog_records": 18,
+        "samples": 35
+      },
+      "target_rate": null,
+      "throughput_events_per_s": 375.4,
+      "throughput_payload_KiB_per_s": 375.4,
+      "warmup_s": 5.0
+    }
+  ],
+  "replicated_summary": {
+    "max_throughput_events_per_s": 382.8,
+    "median_p50_ms": 31.67,
+    "median_p95_ms": 105.0,
+    "median_p99_ms": 179.94,
+    "median_throughput_events_per_s": 375.4,
+    "min_throughput_events_per_s": 358.4
+  },
+  "workload": {
+    "concurrency": 16,
+    "duration_s": 30.0,
+    "keys": 64,
+    "payload_bytes": 1024,
+    "runs": 3,
+    "topic": "3 partitions, ASYNC_REGIONAL, replicas in B and C",
+    "warmup_s": 5.0
+  }
+}

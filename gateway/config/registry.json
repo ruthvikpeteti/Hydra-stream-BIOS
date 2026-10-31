@@ -1,0 +1,15 @@
+{
+  "regions": [
+    {"id": "region-a", "cluster_id": "kafka-a", "legal_zones": ["EU", "DE", "GLOBAL"], "capacity": {"max_local_rf": 3}},
+    {"id": "region-b", "cluster_id": "kafka-b", "legal_zones": ["EU", "FR", "GLOBAL"], "capacity": {"max_local_rf": 1}},
+    {"id": "region-c", "cluster_id": "kafka-c", "legal_zones": ["US", "GLOBAL"], "capacity": {"max_local_rf": 1}}
+  ],
+  "links": [
+    {"from": "region-a", "to": "region-b", "transit_zones": ["EU"]},
+    {"from": "region-a", "to": "region-c", "transit_zones": ["EU", "ATLANTIC", "US"]},
+    {"from": "region-b", "to": "region-a", "transit_zones": ["EU"]},
+    {"from": "region-b", "to": "region-c", "transit_zones": ["EU", "ATLANTIC", "US"]},
+    {"from": "region-c", "to": "region-a", "transit_zones": ["US", "ATLANTIC", "EU"]},
+    {"from": "region-c", "to": "region-b", "transit_zones": ["US", "ATLANTIC", "EU"]}
+  ]
+}

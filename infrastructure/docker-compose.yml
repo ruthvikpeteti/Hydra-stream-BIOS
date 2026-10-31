@@ -1,0 +1,555 @@
+# SovereignStream Phase 1: three INDEPENDENT Kafka clusters (separate KRaft quorums, cluster IDs, networks).
+# Regions never share a network, quorum or cluster id. Cross-region traffic is added only by the
+# replication plane in a later phase, over explicitly approved links.
+name: sovereignstream
+
+x-kafka-image: &kafka-image
+  image: apache/kafka:3.9.0@sha256:fbc7d7c428e3755cf36518d4976596002477e4c052d1f80b5b9eafd06d0fff2f
+  restart: unless-stopped
+  stop_grace_period: 30s
+
+x-a-controller: &a-controller
+  <<: *kafka-image
+  networks: [ss-region-a-net]
+  env_file: [kafka/region-a.common.env]
+  healthcheck:
+    test: ["CMD-SHELL", "/opt/kafka/bin/kafka-metadata-quorum.sh --bootstrap-controller localhost:9093 describe --status >/dev/null 2>&1"]
+    interval: 15s
+    timeout: 20s
+    retries: 12
+    start_period: 20s
+
+x-a-broker: &a-broker
+  <<: *kafka-image
+  networks: [ss-region-a-net]
+  env_file: [kafka/region-a.common.env]
+  healthcheck:
+    test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+    interval: 15s
+    timeout: 20s
+    retries: 12
+    start_period: 30s
+
+x-single: &single
+  <<: *kafka-image
+  healthcheck:
+    test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+    interval: 15s
+    timeout: 20s
+    retries: 12
+    start_period: 30s
+
+services:
+
+  ss-a-controller-1:
+    <<: *a-controller
+    container_name: ss-a-controller-1
+    hostname: ss-a-controller-1
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID_A:?run scripts/init-cluster-ids.sh first}
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: CONTROLLER://:9093
+      KAFKA_HEAP_OPTS: -Xms192m -Xmx192m
+    volumes: [ss-a-controller-1-data:/var/lib/kafka/data]
+
+  ss-a-controller-2:
+    <<: *a-controller
+    container_name: ss-a-controller-2
+    hostname: ss-a-controller-2
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID_A:?run scripts/init-cluster-ids.sh first}
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENERS: CONTROLLER://:9093
+      KAFKA_HEAP_OPTS: -Xms192m -Xmx192m
+    volumes: [ss-a-controller-2-data:/var/lib/kafka/data]
+
+  ss-a-controller-3:
+    <<: *a-controller
+    container_name: ss-a-controller-3
+    hostname: ss-a-controller-3
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID_A:?run scripts/init-cluster-ids.sh first}
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENERS: CONTROLLER://:9093
+      KAFKA_HEAP_OPTS: -Xms192m -Xmx192m
+    volumes: [ss-a-controller-3-data:/var/lib/kafka/data]
+
+  ss-a-broker-1:
+    <<: *a-broker
+    container_name: ss-a-broker-1
+    hostname: ss-a-broker-1
+    depends_on:
+      ss-a-controller-1: {condition: service_healthy}
+      ss-a-controller-2: {condition: service_healthy}
+      ss-a-controller-3: {condition: service_healthy}
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID_A:?run scripts/init-cluster-ids.sh first}
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_NODE_ID: 101
+      KAFKA_LISTENERS: INTERNAL://:9092,EXTERNAL://:29092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://ss-a-broker-1:9092,EXTERNAL://localhost:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_HEAP_OPTS: -Xms384m -Xmx384m
+    volumes:
+      - ss-a-broker-1-data:/var/lib/kafka/data
+      - ./config:/opt/ss-config:ro
+
+  ss-a-broker-2:
+    <<: *a-broker
+    container_name: ss-a-broker-2
+    hostname: ss-a-broker-2
+    depends_on:
+      ss-a-controller-1: {condition: service_healthy}
+      ss-a-controller-2: {condition: service_healthy}
+      ss-a-controller-3: {condition: service_healthy}
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID_A:?run scripts/init-cluster-ids.sh first}
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_NODE_ID: 102
+      KAFKA_LISTENERS: INTERNAL://:9092,EXTERNAL://:29093
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://ss-a-broker-2:9092,EXTERNAL://localhost:29093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_HEAP_OPTS: -Xms384m -Xmx384m
+    volumes:
+      - ss-a-broker-2-data:/var/lib/kafka/data
+      - ./config:/opt/ss-config:ro
+
+  ss-a-broker-3:
+    <<: *a-broker
+    container_name: ss-a-broker-3
+    hostname: ss-a-broker-3
+    depends_on:
+      ss-a-controller-1: {condition: service_healthy}
+      ss-a-controller-2: {condition: service_healthy}
+      ss-a-controller-3: {condition: service_healthy}
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID_A:?run scripts/init-cluster-ids.sh first}
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_NODE_ID: 103
+      KAFKA_LISTENERS: INTERNAL://:9092,EXTERNAL://:29094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://ss-a-broker-3:9092,EXTERNAL://localhost:29094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_HEAP_OPTS: -Xms384m -Xmx384m
+    volumes:
+      - ss-a-broker-3-data:/var/lib/kafka/data
+      - ./config:/opt/ss-config:ro
+
+  ss-b-kafka-1:
+    <<: *single
+    container_name: ss-b-kafka-1
+    hostname: ss-b-kafka-1
+    networks: [ss-region-b-net]
+    env_file: [kafka/region-b.env]
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID_B:?run scripts/init-cluster-ids.sh first}
+      KAFKA_HEAP_OPTS: -Xms384m -Xmx384m
+    volumes:
+      - ss-b-kafka-1-data:/var/lib/kafka/data
+      - ./config:/opt/ss-config:ro
+
+  ss-c-kafka-1:
+    <<: *single
+    container_name: ss-c-kafka-1
+    hostname: ss-c-kafka-1
+    networks: [ss-region-c-net]
+    env_file: [kafka/region-c.env]
+    environment:
+      CLUSTER_ID: ${CLUSTER_ID_C:?run scripts/init-cluster-ids.sh first}
+      KAFKA_HEAP_OPTS: -Xms384m -Xmx384m
+    volumes:
+      - ss-c-kafka-1-data:/var/lib/kafka/data
+      - ./config:/opt/ss-config:ro
+
+  # Application gateway: the ONLY client entry point (ADR-0006). Attached to the client-facing network and
+  # to Region A's network (to reach its brokers); never to the B/C networks. Stateless: all state is in Kafka.
+  ss-a-gateway:
+    build: {context: ../gateway}
+    image: sovereignstream/gateway:phase2
+    container_name: ss-a-gateway
+    hostname: ss-a-gateway
+    restart: unless-stopped
+    stop_grace_period: 30s
+    networks: [ss-client-net, ss-region-a-net, ss-control-net]
+    environment:
+      SS_REGION: region-a
+      SS_POLICY_URL: http://ss-policy-engine:8090
+      SS_POLICY_KEY: ${SS_POLICY_WRITER_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_RESTRICTED_POLICY_TTL_S: ${SS_RESTRICTED_POLICY_TTL_S:-10}
+      SS_CLUSTER_ID: kafka-a
+      SS_KAFKA_BOOTSTRAP: ss-a-broker-1:9092,ss-a-broker-2:9092,ss-a-broker-3:9092
+      SS_API_KEYS: ${SS_GATEWAY_API_KEY:-}
+      SS_LEASE_TTL_MS: ${SS_LEASE_TTL_MS:-10000}
+      SS_LEASE_RENEW_MS: ${SS_LEASE_RENEW_MS:-3000}
+    volumes:
+      # Dev stand-in for the control plane (read-only for the gateway). Mounted as a directory so edits are seen.
+      - ./config/control:/etc/ss/control:ro
+    ports: ["8080:8080"]
+    depends_on:
+      ss-a-broker-1: {condition: service_healthy}
+      ss-a-broker-2: {condition: service_healthy}
+      ss-a-broker-3: {condition: service_healthy}
+      ss-policy-engine: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8080/api/v1/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 30s
+
+  # ---- Phase 3: policy engine, its PostgreSQL, and one regional policy agent per region ----------------------
+  # ss-control-net carries only policy traffic (HTTP). No Kafka broker is attached to it.
+  ss-postgres:
+    image: postgres:16-alpine@sha256:0cefaabd882e42bcb2a2f3dc56d3ce4770560ba62fd7f197f1a2e008fd5731ab
+    container_name: ss-postgres
+    hostname: ss-postgres
+    restart: unless-stopped
+    networks: [ss-control-net]
+    environment:
+      POSTGRES_USER: sspolicy
+      POSTGRES_DB: sspolicy
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run scripts/init-cluster-ids.sh first}
+    volumes: [ss-postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sspolicy -d sspolicy"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  ss-policy-engine:
+    build: {context: ../policy}
+    image: sovereignstream/policy:phase4
+    container_name: ss-policy-engine
+    hostname: ss-policy-engine
+    restart: unless-stopped
+    networks: [ss-control-net]
+    environment:
+      SS_DATABASE_URL: postgresql://sspolicy:${POSTGRES_PASSWORD}@ss-postgres:5432/sspolicy
+      SS_POLICY_ADMIN_KEY: ${SS_POLICY_ADMIN_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_POLICY_WRITER_KEY: ${SS_POLICY_WRITER_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_POLICY_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_BUNDLE_PRIVATE_KEY: /run/ss/bundle-private.pem
+      SS_SEED_REGISTRY: /srv/config/seed-registry.json
+      SS_SEED_PATHS: /srv/config/seed-paths.json
+      SS_AGENT_URLS: '{"region-a": "http://ss-a-agent:8091", "region-b": "http://ss-b-agent:8091", "region-c": "http://ss-c-agent:8091"}'
+    volumes:
+      - ./config/keys/bundle-private.pem:/run/ss/bundle-private.pem:ro
+    ports: ["8090:8090"]
+    depends_on:
+      ss-postgres: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8090/api/v1/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  ss-a-agent:
+    image: sovereignstream/policy:phase4
+    container_name: ss-a-agent
+    hostname: ss-a-agent
+    restart: unless-stopped
+    command: ["uvicorn", "agent_service.main:app", "--host", "0.0.0.0", "--port", "8091", "--workers", "1"]
+    networks: [ss-control-net, ss-region-a-net]
+    environment:
+      SS_REGION: region-a
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_KAFKA_BOOTSTRAP: ss-a-broker-1:9092,ss-a-broker-2:9092,ss-a-broker-3:9092
+      SS_BUNDLE_PUBLIC_KEY: /run/ss/bundle-public.pem
+      SS_BUNDLE_REFRESH_S: ${SS_BUNDLE_REFRESH_S:-5}
+      # Phase 4 receiver: which source region holds which secret, and a TEST-ONLY fault-injection endpoint (set 0 outside dev)
+      SS_REPL_AGENT_KEYS: '{"region-a": "${SS_REPL_KEY_A:?run scripts/init-cluster-ids.sh first}", "region-b": "${SS_REPL_KEY_B}", "region-c": "${SS_REPL_KEY_C}"}'
+      SS_FAULT_INJECTION: ${SS_FAULT_INJECTION:-1}
+    volumes:
+      - ./config/keys/bundle-public.pem:/run/ss/bundle-public.pem:ro
+    ports: ["8091:8091"]
+    depends_on:
+      ss-policy-engine: {condition: service_healthy}
+      ss-a-broker-1: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8091/agent/v1/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  ss-b-agent:
+    image: sovereignstream/policy:phase4
+    container_name: ss-b-agent
+    hostname: ss-b-agent
+    restart: unless-stopped
+    command: ["uvicorn", "agent_service.main:app", "--host", "0.0.0.0", "--port", "8091", "--workers", "1"]
+    networks: [ss-control-net, ss-region-b-net]
+    environment:
+      SS_REGION: region-b
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_KAFKA_BOOTSTRAP: ss-b-kafka-1:9092
+      SS_BUNDLE_PUBLIC_KEY: /run/ss/bundle-public.pem
+      SS_BUNDLE_REFRESH_S: ${SS_BUNDLE_REFRESH_S:-5}
+      # Phase 4 receiver: which source region holds which secret, and a TEST-ONLY fault-injection endpoint (set 0 outside dev)
+      SS_REPL_AGENT_KEYS: '{"region-a": "${SS_REPL_KEY_A:?run scripts/init-cluster-ids.sh first}", "region-b": "${SS_REPL_KEY_B}", "region-c": "${SS_REPL_KEY_C}"}'
+      SS_FAULT_INJECTION: ${SS_FAULT_INJECTION:-1}
+    volumes:
+      - ./config/keys/bundle-public.pem:/run/ss/bundle-public.pem:ro
+    ports: ["8092:8091"]
+    depends_on:
+      ss-policy-engine: {condition: service_healthy}
+      ss-b-kafka-1: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8091/agent/v1/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  ss-c-agent:
+    image: sovereignstream/policy:phase4
+    container_name: ss-c-agent
+    hostname: ss-c-agent
+    restart: unless-stopped
+    command: ["uvicorn", "agent_service.main:app", "--host", "0.0.0.0", "--port", "8091", "--workers", "1"]
+    networks: [ss-control-net, ss-region-c-net]
+    environment:
+      SS_REGION: region-c
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_KAFKA_BOOTSTRAP: ss-c-kafka-1:9092
+      SS_BUNDLE_PUBLIC_KEY: /run/ss/bundle-public.pem
+      SS_BUNDLE_REFRESH_S: ${SS_BUNDLE_REFRESH_S:-5}
+      # Phase 4 receiver: which source region holds which secret, and a TEST-ONLY fault-injection endpoint (set 0 outside dev)
+      SS_REPL_AGENT_KEYS: '{"region-a": "${SS_REPL_KEY_A:?run scripts/init-cluster-ids.sh first}", "region-b": "${SS_REPL_KEY_B}", "region-c": "${SS_REPL_KEY_C}"}'
+      SS_FAULT_INJECTION: ${SS_FAULT_INJECTION:-1}
+    volumes:
+      - ./config/keys/bundle-public.pem:/run/ss/bundle-public.pem:ro
+    ports: ["8093:8091"]
+    depends_on:
+      ss-policy-engine: {condition: service_healthy}
+      ss-c-kafka-1: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8091/agent/v1/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  # Source replication agent for region A: replicates this region's topics to the regions the engine authorizes.
+  ss-a-replicator:
+    image: sovereignstream/policy:phase4
+    container_name: ss-a-replicator
+    hostname: ss-a-replicator
+    restart: unless-stopped
+    stop_grace_period: 40s
+    command: ["uvicorn", "ss_replication.agent_main:app", "--host", "0.0.0.0", "--port", "8095", "--workers", "1", "--timeout-graceful-shutdown", "30"]
+    networks: [ss-control-net, ss-region-a-net]
+    environment:
+      SS_REGION: region-a
+      SS_CLUSTER_ID: kafka-a
+      SS_KAFKA_BOOTSTRAP: ss-a-broker-1:9092,ss-a-broker-2:9092,ss-a-broker-3:9092
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_REPL_AGENT_KEY: ${SS_REPL_KEY_A:?run scripts/init-cluster-ids.sh first}
+      SS_DATABASE_URL: postgresql://sspolicy:${POSTGRES_PASSWORD}@ss-postgres:5432/sspolicy
+      SS_RECEIVER_URLS: '{"region-a": "http://ss-a-agent:8091", "region-b": "http://ss-b-agent:8091", "region-c": "http://ss-c-agent:8091"}'
+      SS_BATCH_MAX_RECORDS: ${SS_BATCH_MAX_RECORDS:-500}
+      SS_MAX_INFLIGHT: ${SS_MAX_INFLIGHT:-1}
+      SS_REQUEST_TIMEOUT_S: ${SS_REQUEST_TIMEOUT_S:-5}
+      SS_BACKOFF_BASE_S: ${SS_BACKOFF_BASE_S:-0.25}
+      SS_BACKOFF_CAP_S: ${SS_BACKOFF_CAP_S:-4}
+      SS_DISCOVERY_INTERVAL_S: ${SS_DISCOVERY_INTERVAL_S:-1}
+      SS_PROBE_INTERVAL_S: ${SS_PROBE_INTERVAL_S:-1}
+      SS_ROUTE_MIN_OBSERVATION_S: ${SS_ROUTE_MIN_OBSERVATION_S:-4}
+      SS_ROUTE_HOLD_S: ${SS_ROUTE_HOLD_S:-4}
+      SS_ROUTE_COOLDOWN_S: ${SS_ROUTE_COOLDOWN_S:-8}
+      SS_ROUTE_HYSTERESIS: ${SS_ROUTE_HYSTERESIS:-0.25}
+      SS_BREAKER_FAILURES: ${SS_BREAKER_FAILURES:-3}
+      SS_BREAKER_OPEN_S: ${SS_BREAKER_OPEN_S:-5}
+    ports: ["8095:8095"]
+    depends_on:
+      ss-policy-engine: {condition: service_healthy}
+      ss-postgres: {condition: service_healthy}
+      ss-toxiproxy: {condition: service_healthy}
+      ss-a-broker-1: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8095/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  # Source replication agent for region B: replicates this region's topics to the regions the engine authorizes.
+  ss-b-replicator:
+    image: sovereignstream/policy:phase4
+    container_name: ss-b-replicator
+    hostname: ss-b-replicator
+    restart: unless-stopped
+    stop_grace_period: 40s
+    command: ["uvicorn", "ss_replication.agent_main:app", "--host", "0.0.0.0", "--port", "8095", "--workers", "1", "--timeout-graceful-shutdown", "30"]
+    networks: [ss-control-net, ss-region-b-net]
+    environment:
+      SS_REGION: region-b
+      SS_CLUSTER_ID: kafka-b
+      SS_KAFKA_BOOTSTRAP: ss-b-kafka-1:9092
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_REPL_AGENT_KEY: ${SS_REPL_KEY_B:?run scripts/init-cluster-ids.sh first}
+      SS_DATABASE_URL: postgresql://sspolicy:${POSTGRES_PASSWORD}@ss-postgres:5432/sspolicy
+      SS_RECEIVER_URLS: '{"region-a": "http://ss-a-agent:8091", "region-b": "http://ss-b-agent:8091", "region-c": "http://ss-c-agent:8091"}'
+      SS_BATCH_MAX_RECORDS: ${SS_BATCH_MAX_RECORDS:-500}
+      SS_MAX_INFLIGHT: ${SS_MAX_INFLIGHT:-1}
+      SS_REQUEST_TIMEOUT_S: ${SS_REQUEST_TIMEOUT_S:-5}
+      SS_BACKOFF_BASE_S: ${SS_BACKOFF_BASE_S:-0.25}
+      SS_BACKOFF_CAP_S: ${SS_BACKOFF_CAP_S:-4}
+      SS_DISCOVERY_INTERVAL_S: ${SS_DISCOVERY_INTERVAL_S:-1}
+      SS_PROBE_INTERVAL_S: ${SS_PROBE_INTERVAL_S:-1}
+      SS_ROUTE_MIN_OBSERVATION_S: ${SS_ROUTE_MIN_OBSERVATION_S:-4}
+      SS_ROUTE_HOLD_S: ${SS_ROUTE_HOLD_S:-4}
+      SS_ROUTE_COOLDOWN_S: ${SS_ROUTE_COOLDOWN_S:-8}
+      SS_ROUTE_HYSTERESIS: ${SS_ROUTE_HYSTERESIS:-0.25}
+      SS_BREAKER_FAILURES: ${SS_BREAKER_FAILURES:-3}
+      SS_BREAKER_OPEN_S: ${SS_BREAKER_OPEN_S:-5}
+    ports: ["8096:8095"]
+    depends_on:
+      ss-policy-engine: {condition: service_healthy}
+      ss-postgres: {condition: service_healthy}
+      ss-toxiproxy: {condition: service_healthy}
+      ss-b-kafka-1: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8095/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  # Source replication agent for region C: replicates this region's topics to the regions the engine authorizes.
+  ss-c-replicator:
+    image: sovereignstream/policy:phase4
+    container_name: ss-c-replicator
+    hostname: ss-c-replicator
+    restart: unless-stopped
+    stop_grace_period: 40s
+    command: ["uvicorn", "ss_replication.agent_main:app", "--host", "0.0.0.0", "--port", "8095", "--workers", "1", "--timeout-graceful-shutdown", "30"]
+    networks: [ss-control-net, ss-region-c-net]
+    environment:
+      SS_REGION: region-c
+      SS_CLUSTER_ID: kafka-c
+      SS_KAFKA_BOOTSTRAP: ss-c-kafka-1:9092
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_REPL_AGENT_KEY: ${SS_REPL_KEY_C:?run scripts/init-cluster-ids.sh first}
+      SS_DATABASE_URL: postgresql://sspolicy:${POSTGRES_PASSWORD}@ss-postgres:5432/sspolicy
+      SS_RECEIVER_URLS: '{"region-a": "http://ss-a-agent:8091", "region-b": "http://ss-b-agent:8091", "region-c": "http://ss-c-agent:8091"}'
+      SS_BATCH_MAX_RECORDS: ${SS_BATCH_MAX_RECORDS:-500}
+      SS_MAX_INFLIGHT: ${SS_MAX_INFLIGHT:-1}
+      SS_REQUEST_TIMEOUT_S: ${SS_REQUEST_TIMEOUT_S:-5}
+      SS_BACKOFF_BASE_S: ${SS_BACKOFF_BASE_S:-0.25}
+      SS_BACKOFF_CAP_S: ${SS_BACKOFF_CAP_S:-4}
+      SS_DISCOVERY_INTERVAL_S: ${SS_DISCOVERY_INTERVAL_S:-1}
+      SS_PROBE_INTERVAL_S: ${SS_PROBE_INTERVAL_S:-1}
+      SS_ROUTE_MIN_OBSERVATION_S: ${SS_ROUTE_MIN_OBSERVATION_S:-4}
+      SS_ROUTE_HOLD_S: ${SS_ROUTE_HOLD_S:-4}
+      SS_ROUTE_COOLDOWN_S: ${SS_ROUTE_COOLDOWN_S:-8}
+      SS_ROUTE_HYSTERESIS: ${SS_ROUTE_HYSTERESIS:-0.25}
+      SS_BREAKER_FAILURES: ${SS_BREAKER_FAILURES:-3}
+      SS_BREAKER_OPEN_S: ${SS_BREAKER_OPEN_S:-5}
+    ports: ["8097:8095"]
+    depends_on:
+      ss-policy-engine: {condition: service_healthy}
+      ss-postgres: {condition: service_healthy}
+      ss-toxiproxy: {condition: service_healthy}
+      ss-c-kafka-1: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8095/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  # Fault injection (Phase 5): one Toxiproxy listener per replication path (infrastructure/chaos/toxiproxy.json).
+  # Source agents reach the target receivers THROUGH these listeners, so each path can be degraded or cut independently.
+  ss-toxiproxy:
+    image: ghcr.io/shopify/toxiproxy:2.9.0@sha256:b44c283298cea49e2defaba1b3028783798346f2a926684e3a345fd8441af3b8
+    container_name: ss-toxiproxy
+    hostname: ss-toxiproxy
+    restart: unless-stopped
+    command: ["-host=0.0.0.0", "-config=/config/toxiproxy.json"]
+    networks: [ss-control-net]
+    volumes: ["./chaos/toxiproxy.json:/config/toxiproxy.json:ro"]
+    ports: ["8474:8474"]
+    healthcheck:
+      test: ["CMD", "/toxiproxy-cli", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Basic monitoring endpoints: one Prometheus exporter per region, on that region's network only.
+  # (The exporter image is shell-less, so it has no container healthcheck; its liveness is /metrics.)
+  ss-a-exporter:
+    image: danielqsj/kafka-exporter:v1.9.0@sha256:4150e46b2e9697ac30e4be8de03ec1704b4bdc7037577b83b8d35a32be298c16
+    container_name: ss-a-exporter
+    restart: unless-stopped
+    networks: [ss-region-a-net, ss-monitoring-net]
+    command: ["--kafka.server=ss-a-broker-1:9092", "--kafka.server=ss-a-broker-2:9092", "--kafka.server=ss-a-broker-3:9092"]
+    ports: ["9308:9308"]
+    depends_on:
+      ss-a-broker-1: {condition: service_healthy}
+
+  ss-b-exporter:
+    image: danielqsj/kafka-exporter:v1.9.0@sha256:4150e46b2e9697ac30e4be8de03ec1704b4bdc7037577b83b8d35a32be298c16
+    container_name: ss-b-exporter
+    restart: unless-stopped
+    networks: [ss-region-b-net, ss-monitoring-net]
+    command: ["--kafka.server=ss-b-kafka-1:9092"]
+    ports: ["9309:9308"]
+    depends_on:
+      ss-b-kafka-1: {condition: service_healthy}
+
+  ss-c-exporter:
+    image: danielqsj/kafka-exporter:v1.9.0@sha256:4150e46b2e9697ac30e4be8de03ec1704b4bdc7037577b83b8d35a32be298c16
+    container_name: ss-c-exporter
+    restart: unless-stopped
+    networks: [ss-region-c-net, ss-monitoring-net]
+    command: ["--kafka.server=ss-c-kafka-1:9092"]
+    ports: ["9310:9308"]
+    depends_on:
+      ss-c-kafka-1: {condition: service_healthy}
+
+  # Optional: docker compose --profile monitoring up -d
+  ss-prometheus:
+    image: prom/prometheus:v3.0.1@sha256:565ee86501224ebbb98fc10b332fa54440b100469924003359edf49cbce374bd
+    container_name: ss-prometheus
+    profiles: [monitoring]
+    restart: unless-stopped
+    networks: [ss-monitoring-net]
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ss-prometheus-data:/prometheus
+    ports: ["9090:9090"]
+
+networks:
+  # One isolated network per region: no container is attached to two region networks.
+  ss-region-a-net: {name: ss-region-a-net}
+  ss-region-b-net: {name: ss-region-b-net}
+  ss-region-c-net: {name: ss-region-c-net}
+  # Client-facing network: only the gateway is attached. Kafka brokers are NOT on it.
+  ss-client-net: {name: ss-client-net}
+  # Policy traffic only (gateway/engine/agents/PostgreSQL). No Kafka broker is attached.
+  ss-control-net: {name: ss-control-net}
+  # Metrics only (exporters -> Prometheus). Carries no Kafka client or replication traffic.
+  ss-monitoring-net: {name: ss-monitoring-net}
+
+volumes:
+
+  ss-a-controller-1-data: {name: ss-a-controller-1-data}
+  ss-a-controller-2-data: {name: ss-a-controller-2-data}
+  ss-a-controller-3-data: {name: ss-a-controller-3-data}
+  ss-a-broker-1-data: {name: ss-a-broker-1-data}
+  ss-a-broker-2-data: {name: ss-a-broker-2-data}
+  ss-a-broker-3-data: {name: ss-a-broker-3-data}
+  ss-b-kafka-1-data: {name: ss-b-kafka-1-data}
+  ss-c-kafka-1-data: {name: ss-c-kafka-1-data}
+  ss-prometheus-data: {name: ss-prometheus-data}
+  ss-postgres-data: {name: ss-postgres-data}

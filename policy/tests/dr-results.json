@@ -1,0 +1,72 @@
+{
+  "DR-01_DR-02": {
+    "tier1": "Kafka-native election; with 1 of 3 replicas in sync acks=all writes were refused (0 acknowledged of 12 attempts)"
+  },
+  "DR-03_DR-08_A_to_B": {
+    "RPO_measured": {
+      "acked": 181,
+      "lost": 0,
+      "present_in_B": 181
+    },
+    "RTO_client_write_unavailable_s": 16.21,
+    "RTO_controller_s": 9.99,
+    "RTO_fence_wait_s": 7.05,
+    "controller_responses": {
+      "1": "ALREADY_IN_PROGRESS",
+      "2": "REFUSED"
+    },
+    "epoch": 2,
+    "expected_rpo_bound_ms": {
+      "*": 0.0,
+      "dr-ab-4602919a": 11908.673524856567,
+      "dr-coord-d58250e3": 6131.204843521118,
+      "dr-lag-68268d3a": 6023.082971572876,
+      "dr-roles-5a75665f": 5917.370557785034
+    },
+    "note": "RPO is acknowledged-but-absent events counted in B after settling; lost ids exist only if replication was behind at the failure."
+  },
+  "DR-04": {
+    "events_written_in_B": 50,
+    "present_in_C": 50,
+    "replication_reconfigured_after_activation_s": 3.08
+  },
+  "DR-05_DR-11_DR-13_B_to_C": {
+    "RPO_measured_A_origin_still_missing_in_C": 0,
+    "RPO_measured_B_origin": {
+      "acked_in_B": 76,
+      "missing_in_C": 0
+    },
+    "RTO_controller_s": 19.48,
+    "RTO_includes_controller_crash_and_resume": true,
+    "controller_restarts": 1,
+    "coordination_members_alive_at_promotion": "c, w1, w2 (3 of 5); a and b lost",
+    "epoch": 3
+  },
+  "DR-06_DR-07": {
+    "became_active_by_itself": false,
+    "direct_producer_to_A_and_B": "refused by Kafka (topic max.message.bytes=1)",
+    "old_A_gateway_write": "421 NOT_ACTIVE_REGION",
+    "old_B_gateway_write": "421 NOT_ACTIVE_REGION"
+  },
+  "DR-09": {
+    "reasons": {
+      "region-b": [
+        "LAG_EXCEEDS_RPO"
+      ],
+      "region-c": [
+        "LAG_EXCEEDS_RPO"
+      ]
+    },
+    "refused": true
+  },
+  "DR-10": {
+    "active_region_wrote_while_unauthorised": false,
+    "coordinator_members_down": 3,
+    "promotion": "none"
+  },
+  "DR-12": {
+    "automatic_promotion": "none while quorum was absent",
+    "members_alive": "a, b (2 of 5)",
+    "state_after_quorum_returned": "HEALTHY_C"
+  }
+}

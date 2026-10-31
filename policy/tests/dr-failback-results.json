@@ -1,0 +1,34 @@
+{
+  "failback_prepare": {
+    "quarantine_topic": "_ss.quarantine.dr-fb-a73d82be",
+    "quarantined_records": 85,
+    "resync_s": 7.7
+  },
+  "failback_switch": {
+    "approve_to_activation_s": 14.45,
+    "approved_by": "oncall@example.org",
+    "epoch": 3,
+    "fence_to_activation_s": 13.52,
+    "lineage_verified_topics": 2,
+    "stale_B_gateway_write": "421 NOT_ACTIVE_REGION"
+  },
+  "reprotect": {
+    "new_writes_replicated": 20,
+    "replicas_rebuilt": [
+      "region-b",
+      "region-c"
+    ]
+  },
+  "split_brain_and_degraded_rpo_A_to_B": {
+    "A_alive_and_isolated": true,
+    "A_last_ack_after_fence_s": 2.7,
+    "B_first_ack_minus_activation_s": 0.45,
+    "RTO_controller_s": 8.67,
+    "acknowledged_at_A": 175,
+    "approved_by": "oncall@example.org",
+    "expected_rpo_ms_at_decision": 6828.7529945373535,
+    "lease_ttl_s": 6,
+    "missing_from_B_RPO_gap_measured": 85,
+    "overlap_of_acknowledged_writes": false
+  }
+}

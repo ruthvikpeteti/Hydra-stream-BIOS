@@ -1,0 +1,314 @@
+{
+  "paths": [
+    {
+      "path_id": "a-b-direct",
+      "source_region": "region-a",
+      "target_region": "region-b",
+      "kind": "DIRECT",
+      "via_regions": [],
+      "transit_zones": [
+        "EU"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18121",
+      "encrypted": false,
+      "cost": 1.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "a-b-peering",
+      "source_region": "region-a",
+      "target_region": "region-b",
+      "kind": "PEERING",
+      "via_regions": [],
+      "transit_zones": [
+        "EU"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18122",
+      "encrypted": true,
+      "cost": 3.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "a-b-relay",
+      "source_region": "region-a",
+      "target_region": "region-b",
+      "kind": "RELAY",
+      "via_regions": [
+        "region-c"
+      ],
+      "transit_zones": [
+        "ATLANTIC",
+        "EU",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18123",
+      "encrypted": true,
+      "cost": 2.0,
+      "fallback": true,
+      "enabled": true
+    },
+    {
+      "path_id": "a-c-direct",
+      "source_region": "region-a",
+      "target_region": "region-c",
+      "kind": "DIRECT",
+      "via_regions": [],
+      "transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18131",
+      "encrypted": false,
+      "cost": 1.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "a-c-peering",
+      "source_region": "region-a",
+      "target_region": "region-c",
+      "kind": "PEERING",
+      "via_regions": [],
+      "transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18132",
+      "encrypted": true,
+      "cost": 3.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "a-c-relay",
+      "source_region": "region-a",
+      "target_region": "region-c",
+      "kind": "RELAY",
+      "via_regions": [
+        "region-b"
+      ],
+      "transit_zones": [
+        "ATLANTIC",
+        "EU",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18133",
+      "encrypted": true,
+      "cost": 2.0,
+      "fallback": true,
+      "enabled": true
+    },
+    {
+      "path_id": "b-a-direct",
+      "source_region": "region-b",
+      "target_region": "region-a",
+      "kind": "DIRECT",
+      "via_regions": [],
+      "transit_zones": [
+        "EU"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18211",
+      "encrypted": false,
+      "cost": 1.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "b-a-peering",
+      "source_region": "region-b",
+      "target_region": "region-a",
+      "kind": "PEERING",
+      "via_regions": [],
+      "transit_zones": [
+        "EU"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18212",
+      "encrypted": true,
+      "cost": 3.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "b-a-relay",
+      "source_region": "region-b",
+      "target_region": "region-a",
+      "kind": "RELAY",
+      "via_regions": [
+        "region-c"
+      ],
+      "transit_zones": [
+        "ATLANTIC",
+        "EU",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18213",
+      "encrypted": true,
+      "cost": 2.0,
+      "fallback": true,
+      "enabled": true
+    },
+    {
+      "path_id": "b-c-direct",
+      "source_region": "region-b",
+      "target_region": "region-c",
+      "kind": "DIRECT",
+      "via_regions": [],
+      "transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18231",
+      "encrypted": false,
+      "cost": 1.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "b-c-peering",
+      "source_region": "region-b",
+      "target_region": "region-c",
+      "kind": "PEERING",
+      "via_regions": [],
+      "transit_zones": [
+        "EU",
+        "ATLANTIC",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18232",
+      "encrypted": true,
+      "cost": 3.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "b-c-relay",
+      "source_region": "region-b",
+      "target_region": "region-c",
+      "kind": "RELAY",
+      "via_regions": [
+        "region-a"
+      ],
+      "transit_zones": [
+        "ATLANTIC",
+        "EU",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18233",
+      "encrypted": true,
+      "cost": 2.0,
+      "fallback": true,
+      "enabled": true
+    },
+    {
+      "path_id": "c-a-direct",
+      "source_region": "region-c",
+      "target_region": "region-a",
+      "kind": "DIRECT",
+      "via_regions": [],
+      "transit_zones": [
+        "US",
+        "ATLANTIC",
+        "EU"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18311",
+      "encrypted": false,
+      "cost": 1.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "c-a-peering",
+      "source_region": "region-c",
+      "target_region": "region-a",
+      "kind": "PEERING",
+      "via_regions": [],
+      "transit_zones": [
+        "US",
+        "ATLANTIC",
+        "EU"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18312",
+      "encrypted": true,
+      "cost": 3.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "c-a-relay",
+      "source_region": "region-c",
+      "target_region": "region-a",
+      "kind": "RELAY",
+      "via_regions": [
+        "region-b"
+      ],
+      "transit_zones": [
+        "ATLANTIC",
+        "EU",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18313",
+      "encrypted": true,
+      "cost": 2.0,
+      "fallback": true,
+      "enabled": true
+    },
+    {
+      "path_id": "c-b-direct",
+      "source_region": "region-c",
+      "target_region": "region-b",
+      "kind": "DIRECT",
+      "via_regions": [],
+      "transit_zones": [
+        "US",
+        "ATLANTIC",
+        "EU"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18321",
+      "encrypted": false,
+      "cost": 1.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "c-b-peering",
+      "source_region": "region-c",
+      "target_region": "region-b",
+      "kind": "PEERING",
+      "via_regions": [],
+      "transit_zones": [
+        "US",
+        "ATLANTIC",
+        "EU"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18322",
+      "encrypted": true,
+      "cost": 3.0,
+      "fallback": false,
+      "enabled": true
+    },
+    {
+      "path_id": "c-b-relay",
+      "source_region": "region-c",
+      "target_region": "region-b",
+      "kind": "RELAY",
+      "via_regions": [
+        "region-a"
+      ],
+      "transit_zones": [
+        "ATLANTIC",
+        "EU",
+        "US"
+      ],
+      "endpoint_url": "http://ss-toxiproxy:18323",
+      "encrypted": true,
+      "cost": 2.0,
+      "fallback": true,
+      "enabled": true
+    }
+  ]
+}

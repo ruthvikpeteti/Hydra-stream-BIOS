@@ -1,0 +1,109 @@
+# SovereignStream CI. Every job calls ci/run_stage.sh <stage>, the same script a developer runs locally.
+# NOTE: this workflow has NOT been executed on GitHub by the authors (no repository, no runner access); the stages were run locally through
+# ci/run_stage.sh and their results are in TEST_RESULTS.md. Third-party actions are pinned to major versions; pin them to commit SHAs
+# before relying on this in a regulated environment.
+name: ci
+on:
+  push: {branches: [main]}
+  pull_request: {}
+  schedule: [{cron: "17 2 * * *"}]          # nightly soak
+concurrency: {group: "ci-${{ github.ref }}", cancel-in-progress: true}
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ env.NODE_VERSION }}", cache: npm, cache-dependency-path: dashboard/package-lock.json}
+      - run: ci/run_stage.sh lint
+  typecheck:
+    needs: lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ env.NODE_VERSION }}", cache: npm, cache-dependency-path: dashboard/package-lock.json}
+      - run: ci/run_stage.sh typecheck
+  unit:
+    needs: typecheck
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ env.NODE_VERSION }}", cache: npm, cache-dependency-path: dashboard/package-lock.json}
+      - run: ci/run_stage.sh unit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: results-unit, path: ci/results}
+  integration:                                  # database, kafka, replication, policy: each on its own fresh stack
+    needs: unit
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix: {stage: [db, kafka, replication, policy]}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}"}
+      - run: ci/run_stage.sh ${{ matrix.stage }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "results-${{ matrix.stage }}", path: ci/results}
+  failover:
+    needs: integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}"}
+      - run: ci/run_stage.sh failover
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: results-failover, path: "policy/tests/dr-*results.json"}
+  chaos:
+    needs: integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}"}
+      - run: ci/run_stage.sh chaos
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: results-chaos, path: "soak/results"}
+  frontend:
+    needs: integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ env.NODE_VERSION }}", cache: npm, cache-dependency-path: dashboard/package-lock.json}
+      - run: cd dashboard && npm ci && npx playwright install --with-deps chromium
+      - run: ci/run_stage.sh frontend
+  soak:
+    if: github.event_name == 'schedule'
+    needs: [failover, chaos, frontend]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ env.PYTHON_VERSION }}"}
+      - run: SOAK_MINUTES=60 ci/run_stage.sh soak
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: results-soak, path: soak/results}

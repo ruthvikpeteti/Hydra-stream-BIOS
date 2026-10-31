@@ -1,0 +1,16 @@
+{
+  "_comment": "A topic that may be stored in all three regions. Replicas in B and C; failover order A, B, C. The recovery point objective is the lag budget below (see DR.md for how it is measured and its resolution).",
+  "name": "telemetry.global",
+  "partitions": 3,
+  "classification": "PUBLIC",
+  "legal_zone": "GLOBAL",
+  "allowed_storage_regions": ["region-a", "region-b", "region-c"],
+  "allowed_processing_regions": ["region-a", "region-b", "region-c"],
+  "allowed_transit_zones": ["EU", "ATLANTIC", "US"],
+  "failover_priority": ["region-a", "region-b", "region-c"],
+  "regional_replica_count": 2,
+  "durability_mode": "ASYNC_REGIONAL",
+  "max_tolerated_replication_lag_ms": 30000,
+  "local_replication_factor": 1,
+  "local_min_insync_replicas": 1
+}

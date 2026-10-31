@@ -1,0 +1,287 @@
+# PHASE 6 overlay: disaster-recovery plane.   Start with: scripts/up.sh --dr
+#   * 5-member etcd coordinator: one member in each region's fault domain (a, b, c) and TWO independent witnesses (w1, w2).
+#     Quorum = 3 of 5, so after losing region A AND region B the members c, w1, w2 still form a quorum.
+#     Losing A, B and both witnesses leaves one member: no quorum, the system fails closed.
+#   * Gateways in regions B and C (A's gateway switches from the dev control file to the coordinator).
+#   * Two failover controllers (leader election + compare-and-swap make exactly one promotion win).
+# MVP SIMULATION: all of this runs on one Docker host; "fault domains" are separate containers/networks.
+x-etcd: &etcd
+  image: quay.io/coreos/etcd:v3.5.16@sha256:d967d98a12dc220a1a290794711dba7eba04b8ce465e12b02383d1bfbb33e159
+  restart: unless-stopped
+  networks: [ss-coord-net]
+  healthcheck:
+    test: ["CMD", "etcdctl", "--endpoints=http://127.0.0.1:2379", "endpoint", "health"]
+    interval: 5s
+    timeout: 4s
+    retries: 20
+    start_period: 5s
+
+x-gateway: &gateway
+  build: {context: ../gateway}
+  image: sovereignstream/gateway:phase2
+  restart: unless-stopped
+  stop_grace_period: 30s
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8080/api/v1/health', timeout=4).status==200 else 1)"]
+    interval: 10s
+    timeout: 6s
+    retries: 12
+    start_period: 30s
+
+services:
+  ss-etcd-a:
+    <<: *etcd
+    container_name: ss-etcd-a
+    hostname: ss-etcd-a
+    command:
+      - etcd
+      - --name=etcd-a
+      - --data-dir=/data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://ss-etcd-a:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://ss-etcd-a:2380
+      - --initial-cluster=etcd-a=http://ss-etcd-a:2380,etcd-b=http://ss-etcd-b:2380,etcd-c=http://ss-etcd-c:2380,etcd-w1=http://ss-etcd-w1:2380,etcd-w2=http://ss-etcd-w2:2380
+      - --initial-cluster-token=ss-coord
+      - --heartbeat-interval=100
+      - --election-timeout=1000
+    volumes: ["ss-etcd-a-data:/data"]
+    ports: ["12379:2379"]
+
+  ss-etcd-b:
+    <<: *etcd
+    container_name: ss-etcd-b
+    hostname: ss-etcd-b
+    command:
+      - etcd
+      - --name=etcd-b
+      - --data-dir=/data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://ss-etcd-b:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://ss-etcd-b:2380
+      - --initial-cluster=etcd-a=http://ss-etcd-a:2380,etcd-b=http://ss-etcd-b:2380,etcd-c=http://ss-etcd-c:2380,etcd-w1=http://ss-etcd-w1:2380,etcd-w2=http://ss-etcd-w2:2380
+      - --initial-cluster-token=ss-coord
+      - --heartbeat-interval=100
+      - --election-timeout=1000
+    volumes: ["ss-etcd-b-data:/data"]
+    ports: ["12380:2379"]
+
+  ss-etcd-c:
+    <<: *etcd
+    container_name: ss-etcd-c
+    hostname: ss-etcd-c
+    command:
+      - etcd
+      - --name=etcd-c
+      - --data-dir=/data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://ss-etcd-c:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://ss-etcd-c:2380
+      - --initial-cluster=etcd-a=http://ss-etcd-a:2380,etcd-b=http://ss-etcd-b:2380,etcd-c=http://ss-etcd-c:2380,etcd-w1=http://ss-etcd-w1:2380,etcd-w2=http://ss-etcd-w2:2380
+      - --initial-cluster-token=ss-coord
+      - --heartbeat-interval=100
+      - --election-timeout=1000
+    volumes: ["ss-etcd-c-data:/data"]
+    ports: ["12381:2379"]
+
+  ss-etcd-w1:
+    <<: *etcd
+    container_name: ss-etcd-w1
+    hostname: ss-etcd-w1
+    command:
+      - etcd
+      - --name=etcd-w1
+      - --data-dir=/data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://ss-etcd-w1:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://ss-etcd-w1:2380
+      - --initial-cluster=etcd-a=http://ss-etcd-a:2380,etcd-b=http://ss-etcd-b:2380,etcd-c=http://ss-etcd-c:2380,etcd-w1=http://ss-etcd-w1:2380,etcd-w2=http://ss-etcd-w2:2380
+      - --initial-cluster-token=ss-coord
+      - --heartbeat-interval=100
+      - --election-timeout=1000
+    volumes: ["ss-etcd-w1-data:/data"]
+    ports: ["12382:2379"]
+
+  ss-etcd-w2:
+    <<: *etcd
+    container_name: ss-etcd-w2
+    hostname: ss-etcd-w2
+    command:
+      - etcd
+      - --name=etcd-w2
+      - --data-dir=/data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://ss-etcd-w2:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://ss-etcd-w2:2380
+      - --initial-cluster=etcd-a=http://ss-etcd-a:2380,etcd-b=http://ss-etcd-b:2380,etcd-c=http://ss-etcd-c:2380,etcd-w1=http://ss-etcd-w1:2380,etcd-w2=http://ss-etcd-w2:2380
+      - --initial-cluster-token=ss-coord
+      - --heartbeat-interval=100
+      - --election-timeout=1000
+    volumes: ["ss-etcd-w2-data:/data"]
+    ports: ["12383:2379"]
+
+  ss-a-gateway:
+    networks: [ss-client-net, ss-region-a-net, ss-control-net, ss-coord-net]
+    environment:
+      SS_COORD_ENDPOINTS: "http://ss-etcd-a:2379,http://ss-etcd-b:2379,http://ss-etcd-c:2379,http://ss-etcd-w1:2379,http://ss-etcd-w2:2379"
+      SS_LEASE_TTL_MS: ${SS_LEASE_TTL_MS:-6000}
+      SS_LEASE_RENEW_MS: ${SS_LEASE_RENEW_MS:-1500}
+    depends_on:
+      ss-etcd-a: {condition: service_healthy}
+
+  ss-b-gateway:
+    <<: *gateway
+    container_name: ss-b-gateway
+    hostname: ss-b-gateway
+    networks: [ss-client-net, ss-region-b-net, ss-control-net, ss-coord-net]
+    environment:
+      SS_REGION: region-b
+      SS_POLICY_URL: http://ss-policy-engine:8090
+      SS_POLICY_KEY: ${SS_POLICY_WRITER_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_RESTRICTED_POLICY_TTL_S: ${SS_RESTRICTED_POLICY_TTL_S:-10}
+      SS_CLUSTER_ID: kafka-b
+      SS_KAFKA_BOOTSTRAP: ss-b-kafka-1:9092
+      SS_API_KEYS: ${SS_GATEWAY_API_KEY:-}
+      SS_COORD_ENDPOINTS: "http://ss-etcd-a:2379,http://ss-etcd-b:2379,http://ss-etcd-c:2379,http://ss-etcd-w1:2379,http://ss-etcd-w2:2379"
+      SS_LEASE_TTL_MS: ${SS_LEASE_TTL_MS:-6000}
+      SS_LEASE_RENEW_MS: ${SS_LEASE_RENEW_MS:-1500}
+    ports: ["8081:8080"]
+    depends_on:
+      ss-b-kafka-1: {condition: service_healthy}
+      ss-policy-engine: {condition: service_healthy}
+      ss-etcd-b: {condition: service_healthy}
+
+  ss-c-gateway:
+    <<: *gateway
+    container_name: ss-c-gateway
+    hostname: ss-c-gateway
+    networks: [ss-client-net, ss-region-c-net, ss-control-net, ss-coord-net]
+    environment:
+      SS_REGION: region-c
+      SS_POLICY_URL: http://ss-policy-engine:8090
+      SS_POLICY_KEY: ${SS_POLICY_WRITER_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_RESTRICTED_POLICY_TTL_S: ${SS_RESTRICTED_POLICY_TTL_S:-10}
+      SS_CLUSTER_ID: kafka-c
+      SS_KAFKA_BOOTSTRAP: ss-c-kafka-1:9092
+      SS_API_KEYS: ${SS_GATEWAY_API_KEY:-}
+      SS_COORD_ENDPOINTS: "http://ss-etcd-a:2379,http://ss-etcd-b:2379,http://ss-etcd-c:2379,http://ss-etcd-w1:2379,http://ss-etcd-w2:2379"
+      SS_LEASE_TTL_MS: ${SS_LEASE_TTL_MS:-6000}
+      SS_LEASE_RENEW_MS: ${SS_LEASE_RENEW_MS:-1500}
+    ports: ["8082:8080"]
+    depends_on:
+      ss-c-kafka-1: {condition: service_healthy}
+      ss-policy-engine: {condition: service_healthy}
+      ss-etcd-c: {condition: service_healthy}
+
+  ss-dr-1:
+    image: sovereignstream/policy:phase4
+    container_name: ss-dr-1
+    hostname: ss-dr-1
+    restart: unless-stopped
+    command: ["uvicorn", "ss_dr.main:app", "--host", "0.0.0.0", "--port", "8100", "--workers", "1"]
+    networks: [ss-control-net, ss-region-a-net, ss-region-b-net, ss-region-c-net, ss-coord-net, ss-client-net]
+    environment:
+      SS_DR_INSTANCE: dr-1
+      SS_DR_ADMIN_KEY: ${SS_POLICY_ADMIN_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_ENGINE_ADMIN_KEY: ${SS_POLICY_ADMIN_KEY}
+      SS_COORD_ENDPOINTS: "http://ss-etcd-a:2379,http://ss-etcd-b:2379,http://ss-etcd-c:2379,http://ss-etcd-w1:2379,http://ss-etcd-w2:2379"
+      SS_KAFKA_BOOTSTRAPS: '{"region-a": "ss-a-broker-1:9092,ss-a-broker-2:9092,ss-a-broker-3:9092", "region-b": "ss-b-kafka-1:9092", "region-c": "ss-c-kafka-1:9092"}'
+      SS_GATEWAY_URLS: '{"region-a": "http://ss-a-gateway:8080", "region-b": "http://ss-b-gateway:8080", "region-c": "http://ss-c-gateway:8080"}'
+      SS_AGENT_URLS: '{"region-a": "http://ss-a-agent:8091", "region-b": "http://ss-b-agent:8091", "region-c": "http://ss-c-agent:8091"}'
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY}
+      SS_EXPECTED_CLUSTER_IDS: '{"region-a": "${CLUSTER_ID_A}", "region-b": "${CLUSTER_ID_B}", "region-c": "${CLUSTER_ID_C}"}'
+      SS_DR_AUTO: ${SS_DR_AUTO:-1}
+      SS_DR_PROBE_INTERVAL_S: ${SS_DR_PROBE_INTERVAL_S:-1}
+      SS_DR_FAIL_AFTER: ${SS_DR_FAIL_AFTER:-3}
+      SS_DR_RECOVER_AFTER: ${SS_DR_RECOVER_AFTER:-3}
+      SS_LEASE_TTL_MS: ${SS_LEASE_TTL_MS:-6000}
+      SS_DR_ALLOW_DEGRADED_RPO: ${SS_DR_ALLOW_DEGRADED_RPO:-0}
+    ports: ["8101:8100"]
+    depends_on:
+      ss-etcd-a: {condition: service_healthy}
+      ss-policy-engine: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8100/dr/v1/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  ss-dr-2:
+    image: sovereignstream/policy:phase4
+    container_name: ss-dr-2
+    hostname: ss-dr-2
+    restart: unless-stopped
+    command: ["uvicorn", "ss_dr.main:app", "--host", "0.0.0.0", "--port", "8100", "--workers", "1"]
+    networks: [ss-control-net, ss-region-a-net, ss-region-b-net, ss-region-c-net, ss-coord-net, ss-client-net]
+    environment:
+      SS_DR_INSTANCE: dr-2
+      SS_DR_ADMIN_KEY: ${SS_POLICY_ADMIN_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_ENGINE_ADMIN_KEY: ${SS_POLICY_ADMIN_KEY}
+      SS_COORD_ENDPOINTS: "http://ss-etcd-a:2379,http://ss-etcd-b:2379,http://ss-etcd-c:2379,http://ss-etcd-w1:2379,http://ss-etcd-w2:2379"
+      SS_KAFKA_BOOTSTRAPS: '{"region-a": "ss-a-broker-1:9092,ss-a-broker-2:9092,ss-a-broker-3:9092", "region-b": "ss-b-kafka-1:9092", "region-c": "ss-c-kafka-1:9092"}'
+      SS_GATEWAY_URLS: '{"region-a": "http://ss-a-gateway:8080", "region-b": "http://ss-b-gateway:8080", "region-c": "http://ss-c-gateway:8080"}'
+      SS_AGENT_URLS: '{"region-a": "http://ss-a-agent:8091", "region-b": "http://ss-b-agent:8091", "region-c": "http://ss-c-agent:8091"}'
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY}
+      SS_EXPECTED_CLUSTER_IDS: '{"region-a": "${CLUSTER_ID_A}", "region-b": "${CLUSTER_ID_B}", "region-c": "${CLUSTER_ID_C}"}'
+      SS_DR_AUTO: ${SS_DR_AUTO:-1}
+      SS_DR_PROBE_INTERVAL_S: ${SS_DR_PROBE_INTERVAL_S:-1}
+      SS_DR_FAIL_AFTER: ${SS_DR_FAIL_AFTER:-3}
+      SS_DR_RECOVER_AFTER: ${SS_DR_RECOVER_AFTER:-3}
+      SS_LEASE_TTL_MS: ${SS_LEASE_TTL_MS:-6000}
+      SS_DR_ALLOW_DEGRADED_RPO: ${SS_DR_ALLOW_DEGRADED_RPO:-0}
+    ports: ["8102:8100"]
+    depends_on:
+      ss-etcd-a: {condition: service_healthy}
+      ss-policy-engine: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8100/dr/v1/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+  # Phase 7: the operations dashboard (read-only view of authoritative state; admin operations are forwarded to the DR controller).
+  ss-dashboard:
+    build: {context: .., dockerfile: dashboard/Dockerfile}
+    image: sovereignstream/dashboard:phase7
+    container_name: ss-dashboard
+    hostname: ss-dashboard
+    restart: unless-stopped
+    networks: [ss-control-net, ss-coord-net, ss-client-net, ss-monitoring-net]
+    environment:
+      SS_ENGINE_URL: http://ss-policy-engine:8090
+      SS_SERVICE_KEY: ${SS_POLICY_SERVICE_KEY:?run scripts/init-cluster-ids.sh first}
+      SS_COORD_ENDPOINTS: "http://ss-etcd-a:2379,http://ss-etcd-b:2379,http://ss-etcd-c:2379,http://ss-etcd-w1:2379,http://ss-etcd-w2:2379"
+      SS_DR_URLS: '["http://ss-dr-1:8100", "http://ss-dr-2:8100"]'
+      SS_DR_ADMIN_KEY: ${SS_POLICY_ADMIN_KEY}
+      SS_REPLICATOR_URLS: '{"region-a": "http://ss-a-replicator:8095", "region-b": "http://ss-b-replicator:8095", "region-c": "http://ss-c-replicator:8095"}'
+      SS_GATEWAY_URLS: '{"region-a": "http://ss-a-gateway:8080", "region-b": "http://ss-b-gateway:8080", "region-c": "http://ss-c-gateway:8080"}'
+      SS_DASH_TOKENS: '{"${SS_DASH_VIEWER_TOKEN:?run scripts/init-cluster-ids.sh first}": {"user": "viewer", "role": "viewer"}, "${SS_DASH_OPERATOR_TOKEN:?run scripts/init-cluster-ids.sh first}": {"user": "operator", "role": "operator"}}'
+      SS_DASH_INTERVAL_S: ${SS_DASH_INTERVAL_S:-2}
+    ports: ["8200:8200"]
+    depends_on:
+      ss-policy-engine: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8200/api/v1/health', timeout=4).status==200 else 1)"]
+      interval: 10s
+      timeout: 6s
+      retries: 12
+      start_period: 15s
+
+networks:
+  # Coordination traffic only (etcd peers and clients). No Kafka broker is attached.
+  ss-coord-net: {name: ss-coord-net}
+
+volumes:
+  ss-etcd-a-data: {name: ss-etcd-a-data}
+  ss-etcd-b-data: {name: ss-etcd-b-data}
+  ss-etcd-c-data: {name: ss-etcd-c-data}
+  ss-etcd-w1-data: {name: ss-etcd-w1-data}
+  ss-etcd-w2-data: {name: ss-etcd-w2-data}

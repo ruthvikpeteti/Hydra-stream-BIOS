@@ -1,0 +1,53 @@
+
+=== 1. Start state
+phase=HEALTHY_A active=region-a epoch=1 fenced={}
+gateways that are active and lease-valid: ['region-a']
+
+=== 2. Create an EU-restricted topic from examples/policies/eu-restricted-topic.json and publish 100 events
+create topic -> HTTP 201; replica plan from the policy engine: ['region-b']
+start replication -> 200 flows: [('region-a', 'region-b', 'ENABLED')]
+acknowledged by gateway A: 100 of 100
+events in B after replication: 100 unique; all match: True
+
+=== 3. Residency: try to replicate the EU-restricted topic into region C (US only)
+engine answer -> HTTP 403 REJECTED: ['LEGAL_ZONE_MISMATCH', 'REGION_NOT_ALLOWED_STORAGE', 'TRANSIT_ZONE_NOT_ALLOWED']
+topic exists in region C's Kafka: False
+
+=== 4. Let replication settle, then kill region A (all 11 containers)
+region A stopped
+  +  8.7s  PROMOTING_B active=- epoch=2
+  + 14.5s  HEALTHY_B active=region-b epoch=2
+promotion: failure boundary -> active = 10.2 s (includes a 8.1 s lease wait); expected RPO bound 4.6 s
+
+=== 5. Region B is now the only writer; consumers and producers continue there
+gateways that are active and lease-valid: ['region-b']
+acknowledged by gateway B: 30 of 30; B now holds 130 unique events; missing from B among those acknowledged before the failure: 0
+
+=== 6. Restore region A: it must stay fenced
+phase=HEALTHY_B active=region-b epoch=2 fenced={'region-a': 2}
+write to the restored A gateway -> HTTP 421 NOT_ACTIVE_REGION
+
+=== 7. Controlled failback to A (operator-approved)
+failback start -> STARTED
+stage READY; divergent records quarantined from A: 0
+approve -> APPROVED
+phase=HEALTHY_A active=region-a epoch=3 fenced={}
+gateways that are active and lease-valid: ['region-a']
+write to the old active B gateway -> HTTP 421 NOT_ACTIVE_REGION
+A holds 130 unique events; all acknowledged events present: True
+
+=== 8. Audit trail of the coordinator (state transitions)
+  seq   7 PROMOTED                     PROMOTING_B -> HEALTHY_B epoch 2 by dr-1
+  seq   8 REPLICATION_RECONFIGURED     HEALTHY_B -> HEALTHY_B epoch 2 by dr-1
+  seq   9 FAILBACK_STARTED             HEALTHY_B -> FAILBACK_PENDING epoch 2 by dr-1
+  seq  10 FAILBACK_TOPIC_SEEDED        FAILBACK_PENDING -> FAILBACK_PENDING epoch 2 by dr-1
+  seq  11 FAILBACK_RESYNCED            FAILBACK_PENDING -> FAILBACK_PENDING epoch 2 by dr-1
+  seq  12 FAILBACK_READY               FAILBACK_PENDING -> FAILBACK_PENDING epoch 2 by dr-1
+  seq  13 FAILBACK_APPROVED            FAILBACK_PENDING -> FAILBACK_PENDING epoch 2 by dr-1
+  seq  14 FAILBACK_FENCE               FAILBACK_PENDING -> FAILBACK_PENDING epoch 3 by dr-1
+  seq  15 FAILBACK_COMPLETED           FAILBACK_PENDING -> HEALTHY_A epoch 3 by dr-1
+  seq  16 REPROTECTED                  HEALTHY_A -> HEALTHY_A epoch 3 by dr-1
+  seq  17 REPROTECTED                  HEALTHY_A -> HEALTHY_A epoch 3 by dr-1
+  seq  18 REPROTECT_COMPLETE           HEALTHY_A -> HEALTHY_A epoch 3 by dr-1
+
+whole demonstration took 69 s on one machine; every failure above was simulated with docker stop.

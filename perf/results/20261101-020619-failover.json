@@ -1,0 +1,120 @@
+{
+  "_written_at": "2026-11-01 02:06:19 +0530",
+  "environment": {
+    "docker": {
+      "containers_running": 31,
+      "cpus_available_to_containers": 10,
+      "memory_gib_available_to_containers": 7.7,
+      "os": "Docker Desktop",
+      "version": "29.9.2"
+    },
+    "gateway": {
+      "lease_ttl_ms": "6000 (dr) / 10000",
+      "producer": "aiokafka acks=all, idempotent",
+      "workers": 1
+    },
+    "host": {
+      "cpu": "Apple M4",
+      "logical_cores": 10,
+      "machine": "arm64",
+      "memory_gib": 16.0,
+      "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+      "physical_cores": "10",
+      "python_loadgen": "3.14.2"
+    },
+    "software": {
+      "etcd": "v3.5.16",
+      "kafka": "apache/kafka 3.9.0 (KRaft)",
+      "node": "v24.13.0",
+      "postgres": "16-alpine",
+      "toxiproxy": "2.9.0"
+    },
+    "topology": {
+      "note": "all regions, the coordinator, PostgreSQL and the load generator share ONE machine and one Docker VM",
+      "region_a": "3 controllers + 3 brokers, RF1 for replicated topics (RF3/min ISR 2 only for local topics)",
+      "region_b": "1 combined node, RF1",
+      "region_c": "1 combined node, RF1"
+    }
+  },
+  "rounds": [
+    {
+      "acknowledged": 114,
+      "client_write_unavailable_s": 17.52,
+      "consumer_recovery_s": 17.81,
+      "controller_rto_s": 11.55,
+      "detection_s": 7.35,
+      "epoch_after": 2,
+      "epoch_before": 1,
+      "expected_rpo_bound_s": 4.811147928237915,
+      "failback": {
+        "approve_to_active_s": 27.11,
+        "reprotect_s": 8.14,
+        "resync_to_ready_s": 16.27
+      },
+      "failure_boundary_after_kill_s": 5.3,
+      "kill_to_active_s": 16.92,
+      "lease_wait_included_s": 8.14,
+      "missing_from_new_active_rpo_gap_events": 0,
+      "promotion_duration_s": 8.14,
+      "round": 1
+    },
+    {
+      "acknowledged": 115,
+      "client_write_unavailable_s": 17.82,
+      "consumer_recovery_s": 17.98,
+      "controller_rto_s": 10.48,
+      "detection_s": 8.2,
+      "epoch_after": 4,
+      "epoch_before": 3,
+      "expected_rpo_bound_s": 11.125086069107056,
+      "failback": {
+        "approve_to_active_s": 28.01,
+        "reprotect_s": 8.13,
+        "resync_to_ready_s": 14.23
+      },
+      "failure_boundary_after_kill_s": 6.17,
+      "kill_to_active_s": 16.91,
+      "lease_wait_included_s": 7.05,
+      "missing_from_new_active_rpo_gap_events": 0,
+      "promotion_duration_s": 7.06,
+      "round": 2
+    },
+    {
+      "acknowledged": 116,
+      "client_write_unavailable_s": 17.87,
+      "consumer_recovery_s": 18.07,
+      "controller_rto_s": 10.49,
+      "detection_s": 8.45,
+      "epoch_after": 6,
+      "epoch_before": 5,
+      "expected_rpo_bound_s": 12.093649625778198,
+      "failback": {
+        "approve_to_active_s": 27.58,
+        "reprotect_s": 8.14,
+        "resync_to_ready_s": 16.27
+      },
+      "failure_boundary_after_kill_s": 6.41,
+      "kill_to_active_s": 17.19,
+      "lease_wait_included_s": 7.04,
+      "missing_from_new_active_rpo_gap_events": 0,
+      "promotion_duration_s": 7.05,
+      "round": 3
+    }
+  ],
+  "summary": {
+    "consumer_recovery_s": {
+      "median": 17.98
+    },
+    "controller_rto_s": {
+      "max": 11.55,
+      "median": 10.49,
+      "min": 10.48
+    },
+    "rounds": 3,
+    "rpo_gap_events_per_round": [
+      0,
+      0,
+      0
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="17" failures="0" errors="0" time="0.977">
+    <testsuite name="src/__tests__/dashboard.test.tsx" timestamp="2026-10-31T20:03:32.434Z" hostname="Ruthviks-MacBook-Air.local" tests="17" failures="0" errors="0" skipped="0" time="0.338861625">
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="states &gt; shows a loading state before the first snapshot" time="0.039005459">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="states &gt; shows an error state, with retry, when the backend has no snapshot" time="0.027156167">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="states &gt; shows empty states instead of blank tables" time="0.020933167">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="accuracy: the screen shows what the backend says &gt; broker health, active region and epoch" time="0.012152625">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="accuracy: the screen shows what the backend says &gt; replication lag and backlog equal the backend values; unknown stays unknown" time="0.012664791">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="accuracy: the screen shows what the backend says &gt; a route change appears only after the backend reports it" time="0.00982975">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="accuracy: the screen shows what the backend says &gt; shows RTT, loss, bandwidth, score and circuit-breaker state of every path" time="0.01294075">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="staleness &gt; marks the dashboard stale when updates stop, and keeps the old data visibly marked" time="0.015275916">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="staleness &gt; marks sections stale when the backend says a source is stale" time="0.009537084">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="permissions and administrative operations &gt; a viewer sees no administrative controls" time="0.008202292">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="permissions and administrative operations &gt; an operator must confirm, and the answer shown is the controller&apos;s: a refusal is not shown as success" time="0.042730542">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="permissions and administrative operations &gt; a controller answer of PROMOTED still changes nothing on screen until the coordinator reports it" time="0.027062334">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="permissions and administrative operations &gt; an unauthorised admin call (403 from the API) is reported as refused" time="0.024353958">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="permissions and administrative operations &gt; degraded RPO can only be requested where the deployment permits it" time="0.009464875">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="permissions and administrative operations &gt; failback approval is offered only when the backend reports READY" time="0.019379125">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="sensitive data &gt; never renders payloads or credentials even if the backend sent them" time="0.011354083">
+        </testcase>
+        <testcase classname="src/__tests__/dashboard.test.tsx" name="sign in &gt; rejects an unknown token and stores nothing" time="0.035917083">
+        </testcase>
+    </testsuite>
+</testsuites>

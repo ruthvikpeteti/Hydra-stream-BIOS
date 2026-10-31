@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: kafka-region-a
+    static_configs: [{ targets: ['ss-a-exporter:9308'], labels: { region: region-a } }]
+  - job_name: kafka-region-b
+    static_configs: [{ targets: ['ss-b-exporter:9308'], labels: { region: region-b } }]
+  - job_name: kafka-region-c
+    static_configs: [{ targets: ['ss-c-exporter:9308'], labels: { region: region-c } }]
+  - job_name: sovereignstream-dashboard-api      # derived platform metrics (Phase 7): see DASHBOARD.md for the label policy
+    metrics_path: /metrics
+    static_configs: [{ targets: ['ss-dashboard:8200'] }]

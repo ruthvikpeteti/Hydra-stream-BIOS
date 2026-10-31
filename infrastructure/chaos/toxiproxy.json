@@ -1,0 +1,110 @@
+[
+  {
+    "name": "a-b-direct",
+    "listen": "0.0.0.0:18121",
+    "upstream": "ss-b-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "a-b-peering",
+    "listen": "0.0.0.0:18122",
+    "upstream": "ss-b-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "a-b-relay",
+    "listen": "0.0.0.0:18123",
+    "upstream": "ss-b-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "a-c-direct",
+    "listen": "0.0.0.0:18131",
+    "upstream": "ss-c-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "a-c-peering",
+    "listen": "0.0.0.0:18132",
+    "upstream": "ss-c-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "a-c-relay",
+    "listen": "0.0.0.0:18133",
+    "upstream": "ss-c-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "b-a-direct",
+    "listen": "0.0.0.0:18211",
+    "upstream": "ss-a-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "b-a-peering",
+    "listen": "0.0.0.0:18212",
+    "upstream": "ss-a-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "b-a-relay",
+    "listen": "0.0.0.0:18213",
+    "upstream": "ss-a-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "b-c-direct",
+    "listen": "0.0.0.0:18231",
+    "upstream": "ss-c-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "b-c-peering",
+    "listen": "0.0.0.0:18232",
+    "upstream": "ss-c-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "b-c-relay",
+    "listen": "0.0.0.0:18233",
+    "upstream": "ss-c-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "c-a-direct",
+    "listen": "0.0.0.0:18311",
+    "upstream": "ss-a-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "c-a-peering",
+    "listen": "0.0.0.0:18312",
+    "upstream": "ss-a-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "c-a-relay",
+    "listen": "0.0.0.0:18313",
+    "upstream": "ss-a-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "c-b-direct",
+    "listen": "0.0.0.0:18321",
+    "upstream": "ss-b-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "c-b-peering",
+    "listen": "0.0.0.0:18322",
+    "upstream": "ss-b-agent:8091",
+    "enabled": true
+  },
+  {
+    "name": "c-b-relay",
+    "listen": "0.0.0.0:18323",
+    "upstream": "ss-b-agent:8091",
+    "enabled": true
+  }
+]

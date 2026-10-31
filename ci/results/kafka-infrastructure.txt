@@ -1,0 +1,19 @@
+[32mPASS[0m Test A: three independent, healthy clusters with distinct ids
+[32mPASS[0m Test B: 1000 events produced with acks=all and consumed in per-key order
+[32mPASS[0m Test C: leader failover succeeded and acks=all writes continued with 2 in-sync replicas
+[32mPASS[0m Test D: acks=all writes are refused when ISR (1) < min.insync.replicas (2); nothing was acknowledged
+[32mPASS[0m Test E: brokers recovered, ISR back to 3, no loss or duplication
+test_replication.py::test_01_replicate_1000_events_a_to_b PASSED         [  7%]
+test_replication.py::test_02_replicate_1000_events_a_to_c PASSED         [ 14%]
+test_replication.py::test_03_event_ids_ordering_and_metadata_are_preserved PASSED [ 21%]
+test_replication.py::test_04_separate_checkpoints_for_each_target PASSED [ 28%]
+test_replication.py::test_05_agent_restart_recovers_from_checkpoints PASSED [ 35%]
+test_replication.py::test_06_destination_killed_during_transmission_then_catch_up PASSED [ 42%]
+test_replication.py::test_11_b_and_c_make_independent_progress PASSED    [ 50%]
+test_replication.py::test_07_response_loss_creates_a_detectable_duplicate PASSED [ 57%]
+test_replication.py::test_08_checkpoint_never_advances_before_destination_acknowledgement PASSED [ 64%]
+test_replication.py::test_09_postgres_restart_keeps_checkpoints_and_replication_resumes PASSED [ 71%]
+test_replication.py::test_12_unauthorized_topic_is_never_replicated PASSED [ 78%]
+test_replication.py::test_13_unauthorized_generation_epoch_identity_are_rejected PASSED [ 85%]
+test_replication.py::test_14_promote_b_cutover_position_lineage_and_continuity PASSED [ 92%]
+test_replication.py::test_15_no_replication_loop_and_obsolete_flows_are_dead PASSED [100%]

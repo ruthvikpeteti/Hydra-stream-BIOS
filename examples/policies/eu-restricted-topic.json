@@ -1,0 +1,16 @@
+{
+  "_comment": "POST /api/v1/topics on the gateway of the home region. An EU-restricted topic may live only where legal zone EU is available: here A and B. Region C (US only) is prohibited and will never receive it.",
+  "name": "payments.eu",
+  "partitions": 3,
+  "classification": "RESTRICTED",
+  "legal_zone": "EU",
+  "allowed_storage_regions": ["region-a", "region-b"],
+  "allowed_processing_regions": ["region-a", "region-b"],
+  "allowed_transit_zones": ["EU"],
+  "failover_priority": ["region-a", "region-b"],
+  "regional_replica_count": 1,
+  "durability_mode": "ASYNC_REGIONAL",
+  "max_tolerated_replication_lag_ms": 30000,
+  "local_replication_factor": 1,
+  "local_min_insync_replicas": 1
+}

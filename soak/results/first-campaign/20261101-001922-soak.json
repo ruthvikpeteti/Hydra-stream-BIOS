@@ -1,0 +1,113 @@
+{
+  "duration_min": 8.2,
+  "workload": {
+    "rate_events_per_s": 15.0,
+    "acknowledged": 7045,
+    "errors_by_code": {
+      "ReadTimeout": 1,
+      "NOT_ACTIVE_REGION": 36,
+      "ReadError": 17
+    },
+    "acknowledged_by_region": {
+      "region-a": 7045,
+      "region-b": 0,
+      "region-c": 0
+    }
+  },
+  "faults_injected": [
+    {
+      "n": 1,
+      "fault": "network latency/jitter on A->B and A->C",
+      "started_s": 0.0,
+      "duration_s": 30.7
+    },
+    {
+      "n": 2,
+      "fault": "disconnect all replication paths for 25 s",
+      "started_s": 60.0,
+      "duration_s": 25.6
+    },
+    {
+      "n": 3,
+      "fault": "restart replication workers (A replicator, B receiver)",
+      "started_s": 120.0,
+      "duration_s": 1.7
+    },
+    {
+      "n": 4,
+      "fault": "restart the standby gateway (B)",
+      "started_s": 180.0,
+      "duration_s": 0.6
+    },
+    {
+      "n": 5,
+      "fault": "restart a Kafka broker in A (broker 2)",
+      "started_s": 240.0,
+      "duration_s": 2.3
+    },
+    {
+      "n": 6,
+      "fault": "kill regional cluster C for 45 s",
+      "started_s": 300.0,
+      "duration_s": 49.7
+    },
+    {
+      "n": 7,
+      "fault": "restart the ACTIVE gateway (A)",
+      "started_s": 360.0,
+      "duration_s": 0.6
+    },
+    {
+      "n": 8,
+      "fault": "restart the single Kafka node of B",
+      "started_s": 420.0,
+      "duration_s": 0.9
+    }
+  ],
+  "final_failover": null,
+  "active_region_at_end": "region-a",
+  "epoch_at_end": 1,
+  "phase_at_end": "HEALTHY_A",
+  "monitor_samples": 452,
+  "checkpoint_keys_tracked": 21,
+  "verification": {
+    "acknowledged_but_missing_from_active_region": 0,
+    "rpo_gap_note": "must be 0",
+    "replicas": {
+      "region-b": {
+        "events": 7046,
+        "unique": 7046,
+        "duplicates": 0,
+        "same_order_as_active": true,
+        "missing_vs_active": 0
+      },
+      "region-c": {
+        "events": 7046,
+        "unique": 7046,
+        "duplicates": 0,
+        "same_order_as_active": true,
+        "missing_vs_active": 0
+      }
+    },
+    "audit_chain": {
+      "ok": true,
+      "checked": 12552,
+      "head": "7dde5b8078f511264a1d664463113330223edbc94478007f4eb09ed20f129e1b"
+    }
+  },
+  "violations": [],
+  "passed": true,
+  "log": [
+    "00:11:09 soak started: 8.0 min at 15.0 events/s on soak-ce25a065, epoch 1",
+    "00:11:09 FAULT 1: network latency/jitter on A->B and A->C",
+    "00:12:09 FAULT 2: disconnect all replication paths for 25 s",
+    "00:13:09 FAULT 3: restart replication workers (A replicator, B receiver)",
+    "00:14:09 FAULT 4: restart the standby gateway (B)",
+    "00:15:09 FAULT 5: restart a Kafka broker in A (broker 2)",
+    "00:16:09 FAULT 6: kill regional cluster C for 45 s",
+    "00:17:09 FAULT 7: restart the ACTIVE gateway (A)",
+    "00:18:09 FAULT 8: restart the single Kafka node of B",
+    "00:19:09 faults finished; restoring everything",
+    "00:19:15 verifying data"
+  ]
+}

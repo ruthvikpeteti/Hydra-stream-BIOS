@@ -1,0 +1,8 @@
+# DEBUG ONLY. Publishes Kafka's EXTERNAL listeners to the host, which breaks the gateway-only security
+# model (clients could bypass the gateway's lease/epoch/policy checks). Used with: scripts/up.sh --expose-kafka
+services:
+  ss-a-broker-1: {ports: ["29092:29092"]}
+  ss-a-broker-2: {ports: ["29093:29093"]}
+  ss-a-broker-3: {ports: ["29094:29094"]}
+  ss-b-kafka-1:  {ports: ["39092:39092"]}
+  ss-c-kafka-1:  {ports: ["49092:49092"]}

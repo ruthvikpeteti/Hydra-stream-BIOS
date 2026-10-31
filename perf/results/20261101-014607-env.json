@@ -1,0 +1,37 @@
+{
+  "_written_at": "2026-11-01 01:46:07 +0530",
+  "docker": {
+    "containers_running": 31,
+    "cpus_available_to_containers": 10,
+    "memory_gib_available_to_containers": 7.7,
+    "os": "Docker Desktop",
+    "version": "29.9.2"
+  },
+  "gateway": {
+    "lease_ttl_ms": "6000 (dr) / 10000",
+    "producer": "aiokafka acks=all, idempotent",
+    "workers": 1
+  },
+  "host": {
+    "cpu": "Apple M4",
+    "logical_cores": 10,
+    "machine": "arm64",
+    "memory_gib": 16.0,
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "physical_cores": "10",
+    "python_loadgen": "3.14.2"
+  },
+  "software": {
+    "etcd": "v3.5.16",
+    "kafka": "apache/kafka 3.9.0 (KRaft)",
+    "node": "v24.13.0",
+    "postgres": "16-alpine",
+    "toxiproxy": "2.9.0"
+  },
+  "topology": {
+    "note": "all regions, the coordinator, PostgreSQL and the load generator share ONE machine and one Docker VM",
+    "region_a": "3 controllers + 3 brokers, RF1 for replicated topics (RF3/min ISR 2 only for local topics)",
+    "region_b": "1 combined node, RF1",
+    "region_c": "1 combined node, RF1"
+  }
+}

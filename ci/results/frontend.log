@@ -1,0 +1,425 @@
+ Image sovereignstream/policy:phase4 Building 
+ Image sovereignstream/dashboard:phase7 Building 
+ Image sovereignstream/gateway:phase2 Building 
+ Image sovereignstream/gateway:phase2 Building 
+ Image sovereignstream/gateway:phase2 Building 
+ Image sovereignstream/policy:phase4 Built 
+ Image sovereignstream/gateway:phase2 Built 
+ Image sovereignstream/dashboard:phase7 Built 
+ Image sovereignstream/gateway:phase2 Built 
+ Image sovereignstream/gateway:phase2 Built 
+ Network ss-coord-net Creating 
+ Volume ss-a-controller-2-data Creating 
+ Volume ss-a-controller-2-data Creating 
+ Volume ss-etcd-w1-data Creating 
+ Network ss-coord-net Creating 
+ Network ss-control-net Creating 
+ Volume ss-b-kafka-1-data Creating 
+ Volume ss-b-kafka-1-data Creating 
+ Volume ss-c-kafka-1-data Creating 
+ Volume ss-c-kafka-1-data Creating 
+ Volume ss-etcd-b-data Creating 
+ Volume ss-etcd-b-data Creating 
+ Volume ss-a-broker-3-data Creating 
+ Volume ss-a-broker-3-data Creating 
+ Volume ss-etcd-c-data Creating 
+ Volume ss-etcd-c-data Creating 
+ Network ss-client-net Creating 
+ Network ss-client-net Creating 
+ Volume ss-etcd-w1-data Creating 
+ Network ss-region-b-net Creating 
+ Network ss-region-b-net Creating 
+ Volume ss-etcd-w2-data Creating 
+ Volume ss-etcd-w2-data Creating 
+ Network ss-region-a-net Creating 
+ Network ss-region-c-net Creating 
+ Network ss-region-a-net Creating 
+ Network ss-region-c-net Creating 
+ Volume ss-postgres-data Creating 
+ Volume ss-postgres-data Creating 
+ Volume ss-a-controller-3-data Creating 
+ Volume ss-a-controller-3-data Creating 
+ Volume ss-a-controller-1-data Creating 
+ Volume ss-a-controller-1-data Creating 
+ Volume ss-a-broker-1-data Creating 
+ Volume ss-a-broker-1-data Creating 
+ Network ss-monitoring-net Creating 
+ Network ss-monitoring-net Creating 
+ Volume ss-a-broker-2-data Creating 
+ Volume ss-a-broker-2-data Creating 
+ Volume ss-etcd-a-data Creating 
+ Volume ss-etcd-a-data Creating 
+ Network ss-control-net Creating 
+ Volume ss-a-controller-2-data Created 
+ Volume ss-a-controller-2-data Created 
+ Volume ss-c-kafka-1-data Created 
+ Volume ss-c-kafka-1-data Created 
+ Volume ss-a-controller-1-data Created 
+ Volume ss-a-controller-1-data Created 
+ Volume ss-etcd-w2-data Created 
+ Volume ss-etcd-w2-data Created 
+ Volume ss-a-broker-1-data Created 
+ Volume ss-a-broker-1-data Created 
+ Volume ss-a-controller-3-data Created 
+ Volume ss-a-controller-3-data Created 
+ Volume ss-a-broker-2-data Created 
+ Volume ss-a-broker-2-data Created 
+ Volume ss-postgres-data Created 
+ Volume ss-postgres-data Created 
+ Volume ss-b-kafka-1-data Created 
+ Volume ss-b-kafka-1-data Created 
+ Volume ss-etcd-w1-data Created 
+ Volume ss-etcd-w1-data Created 
+ Volume ss-etcd-b-data Created 
+ Volume ss-etcd-b-data Created 
+ Volume ss-etcd-a-data Created 
+ Volume ss-etcd-a-data Created 
+ Volume ss-etcd-c-data Created 
+ Volume ss-etcd-c-data Created 
+ Volume ss-a-broker-3-data Created 
+ Volume ss-a-broker-3-data Created 
+ Network ss-coord-net Created 
+ Network ss-coord-net Created 
+ Container ss-etcd-c Creating 
+ Container ss-etcd-w2 Creating 
+ Container ss-etcd-b Creating 
+ Container ss-etcd-a Creating 
+ Container ss-etcd-w1 Creating 
+ Network ss-region-a-net Created 
+ Network ss-region-a-net Created 
+ Container ss-a-controller-1 Creating 
+ Container ss-a-controller-2 Creating 
+ Container ss-a-controller-3 Creating 
+ Network ss-control-net Created 
+ Network ss-control-net Created 
+ Container ss-toxiproxy Creating 
+ Container ss-postgres Creating 
+ Network ss-region-b-net Created 
+ Network ss-region-b-net Created 
+ Container ss-b-kafka-1 Creating 
+ Network ss-region-c-net Created 
+ Network ss-region-c-net Created 
+ Container ss-c-kafka-1 Creating 
+ Container ss-etcd-a Created 
+ Network ss-client-net Created 
+ Network ss-client-net Created 
+ Container ss-etcd-b Created 
+ Container ss-etcd-c Created 
+ Network ss-monitoring-net Created 
+ Network ss-monitoring-net Created 
+ Container ss-etcd-w2 Created 
+ Container ss-etcd-w1 Created 
+ Container ss-a-controller-1 Created 
+ Container ss-a-controller-2 Created 
+ Container ss-a-controller-3 Created 
+ Container ss-a-broker-2 Creating 
+ Container ss-a-broker-3 Creating 
+ Container ss-a-broker-1 Creating 
+ Container ss-toxiproxy Created 
+ Container ss-postgres Created 
+ Container ss-policy-engine Creating 
+ Container ss-b-kafka-1 Created 
+ Container ss-b-exporter Creating 
+ Container ss-c-kafka-1 Created 
+ Container ss-c-exporter Creating 
+ Container ss-a-broker-2 Created 
+ Container ss-a-broker-1 Created 
+ Container ss-a-exporter Creating 
+ Container ss-a-broker-3 Created 
+ Container ss-b-exporter Created 
+ Container ss-policy-engine Created 
+ Container ss-dr-1 Creating 
+ Container ss-b-replicator Creating 
+ Container ss-a-gateway Creating 
+ Container ss-a-agent Creating 
+ Container ss-b-agent Creating 
+ Container ss-a-replicator Creating 
+ Container ss-c-replicator Creating 
+ Container ss-b-gateway Creating 
+ Container ss-c-gateway Creating 
+ Container ss-dashboard Creating 
+ Container ss-dr-2 Creating 
+ Container ss-c-agent Creating 
+ Container ss-c-exporter Created 
+ Container ss-a-exporter Created 
+ Container ss-a-gateway Created 
+ Container ss-b-gateway Created 
+ Container ss-c-gateway Created 
+ Container ss-dashboard Created 
+ Container ss-b-agent Created 
+ Container ss-dr-2 Created 
+ Container ss-dr-1 Created 
+ Container ss-a-agent Created 
+ Container ss-b-replicator Created 
+ Container ss-c-agent Created 
+ Container ss-a-replicator Created 
+ Container ss-c-replicator Created 
+ Container ss-etcd-w1 Starting 
+ Container ss-c-kafka-1 Starting 
+ Container ss-b-kafka-1 Starting 
+ Container ss-etcd-b Starting 
+ Container ss-etcd-w2 Starting 
+ Container ss-postgres Starting 
+ Container ss-toxiproxy Starting 
+ Container ss-a-controller-3 Starting 
+ Container ss-a-controller-2 Starting 
+ Container ss-etcd-c Starting 
+ Container ss-a-controller-1 Starting 
+ Container ss-etcd-a Starting 
+ Container ss-etcd-w1 Started 
+ Container ss-c-kafka-1 Started 
+ Container ss-c-kafka-1 Waiting 
+ Container ss-b-kafka-1 Started 
+ Container ss-b-kafka-1 Waiting 
+ Container ss-etcd-b Started 
+ Container ss-etcd-w2 Started 
+ Container ss-postgres Started 
+ Container ss-postgres Waiting 
+ Container ss-toxiproxy Started 
+ Container ss-a-controller-3 Started 
+ Container ss-a-controller-2 Started 
+ Container ss-etcd-c Started 
+ Container ss-a-controller-1 Started 
+ Container ss-a-controller-3 Waiting 
+ Container ss-a-controller-1 Waiting 
+ Container ss-a-controller-2 Waiting 
+ Container ss-a-controller-3 Waiting 
+ Container ss-a-controller-2 Waiting 
+ Container ss-a-controller-3 Waiting 
+ Container ss-a-controller-1 Waiting 
+ Container ss-a-controller-1 Waiting 
+ Container ss-a-controller-2 Waiting 
+ Container ss-etcd-a Started 
+ Container ss-postgres Healthy 
+ Container ss-policy-engine Starting 
+ Container ss-policy-engine Started 
+ Container ss-toxiproxy Waiting 
+ Container ss-c-kafka-1 Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-b-kafka-1 Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-c-kafka-1 Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-etcd-a Waiting 
+ Container ss-etcd-b Waiting 
+ Container ss-b-kafka-1 Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-b-kafka-1 Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-postgres Waiting 
+ Container ss-toxiproxy Waiting 
+ Container ss-postgres Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-etcd-a Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-etcd-c Waiting 
+ Container ss-c-kafka-1 Waiting 
+ Container ss-c-kafka-1 Healthy 
+ Container ss-c-exporter Starting 
+ Container ss-b-kafka-1 Healthy 
+ Container ss-b-exporter Starting 
+ Container ss-toxiproxy Healthy 
+ Container ss-c-kafka-1 Healthy 
+ Container ss-etcd-a Healthy 
+ Container ss-postgres Healthy 
+ Container ss-etcd-a Healthy 
+ Container ss-c-kafka-1 Healthy 
+ Container ss-c-kafka-1 Healthy 
+ Container ss-toxiproxy Healthy 
+ Container ss-b-kafka-1 Healthy 
+ Container ss-etcd-c Healthy 
+ Container ss-etcd-b Healthy 
+ Container ss-postgres Healthy 
+ Container ss-b-kafka-1 Healthy 
+ Container ss-b-kafka-1 Healthy 
+ Container ss-c-exporter Started 
+ Container ss-b-exporter Started 
+ Container ss-a-controller-2 Healthy 
+ Container ss-a-controller-3 Healthy 
+ Container ss-a-controller-3 Healthy 
+ Container ss-a-controller-3 Healthy 
+ Container ss-a-controller-2 Healthy 
+ Container ss-a-controller-2 Healthy 
+ Container ss-a-controller-1 Healthy 
+ Container ss-a-controller-1 Healthy 
+ Container ss-a-broker-1 Starting 
+ Container ss-a-broker-2 Starting 
+ Container ss-a-controller-1 Healthy 
+ Container ss-a-broker-3 Starting 
+ Container ss-a-broker-1 Started 
+ Container ss-policy-engine Waiting 
+ Container ss-a-broker-1 Waiting 
+ Container ss-a-broker-1 Waiting 
+ Container ss-toxiproxy Waiting 
+ Container ss-a-broker-1 Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-postgres Waiting 
+ Container ss-a-broker-2 Started 
+ Container ss-a-broker-3 Started 
+ Container ss-etcd-a Waiting 
+ Container ss-a-broker-1 Waiting 
+ Container ss-a-broker-2 Waiting 
+ Container ss-a-broker-3 Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-postgres Healthy 
+ Container ss-toxiproxy Healthy 
+ Container ss-etcd-a Healthy 
+ Container ss-policy-engine Healthy 
+ Container ss-policy-engine Healthy 
+ Container ss-policy-engine Healthy 
+ Container ss-policy-engine Healthy 
+ Container ss-policy-engine Healthy 
+ Container ss-dr-2 Starting 
+ Container ss-c-agent Starting 
+ Container ss-policy-engine Healthy 
+ Container ss-c-gateway Starting 
+ Container ss-policy-engine Healthy 
+ Container ss-b-agent Starting 
+ Container ss-policy-engine Healthy 
+ Container ss-c-replicator Starting 
+ Container ss-policy-engine Healthy 
+ Container ss-b-replicator Starting 
+ Container ss-policy-engine Healthy 
+ Container ss-b-gateway Starting 
+ Container ss-policy-engine Healthy 
+ Container ss-policy-engine Healthy 
+ Container ss-dr-1 Starting 
+ Container ss-dashboard Starting 
+ Container ss-dr-2 Started 
+ Container ss-c-agent Started 
+ Container ss-c-gateway Started 
+ Container ss-b-agent Started 
+ Container ss-c-replicator Started 
+ Container ss-b-replicator Started 
+ Container ss-b-gateway Started 
+ Container ss-dr-1 Started 
+ Container ss-dashboard Started 
+ Container ss-a-broker-1 Healthy 
+ Container ss-a-broker-1 Healthy 
+ Container ss-a-exporter Starting 
+ Container ss-a-agent Starting 
+ Container ss-a-broker-1 Healthy 
+ Container ss-a-replicator Starting 
+ Container ss-a-exporter Started 
+ Container ss-a-broker-2 Healthy 
+ Container ss-a-broker-3 Healthy 
+ Container ss-a-broker-1 Healthy 
+ Container ss-a-gateway Starting 
+ Container ss-a-agent Started 
+ Container ss-a-replicator Started 
+ Container ss-a-gateway Started 
+ Container ss-c-gateway Waiting 
+ Container ss-a-broker-3 Waiting 
+ Container ss-a-broker-1 Waiting 
+ Container ss-b-replicator Waiting 
+ Container ss-a-exporter Waiting 
+ Container ss-dashboard Waiting 
+ Container ss-c-exporter Waiting 
+ Container ss-b-exporter Waiting 
+ Container ss-c-kafka-1 Waiting 
+ Container ss-a-controller-3 Waiting 
+ Container ss-etcd-a Waiting 
+ Container ss-dr-2 Waiting 
+ Container ss-toxiproxy Waiting 
+ Container ss-etcd-c Waiting 
+ Container ss-b-agent Waiting 
+ Container ss-etcd-b Waiting 
+ Container ss-postgres Waiting 
+ Container ss-a-controller-2 Waiting 
+ Container ss-a-gateway Waiting 
+ Container ss-b-kafka-1 Waiting 
+ Container ss-a-controller-1 Waiting 
+ Container ss-c-agent Waiting 
+ Container ss-a-broker-2 Waiting 
+ Container ss-a-agent Waiting 
+ Container ss-c-replicator Waiting 
+ Container ss-policy-engine Waiting 
+ Container ss-a-replicator Waiting 
+ Container ss-dr-1 Waiting 
+ Container ss-etcd-w2 Waiting 
+ Container ss-etcd-w1 Waiting 
+ Container ss-b-gateway Waiting 
+ Container ss-b-exporter Healthy 
+ Container ss-postgres Healthy 
+ Container ss-a-broker-2 Healthy 
+ Container ss-a-exporter Healthy 
+ Container ss-policy-engine Healthy 
+ Container ss-a-broker-3 Healthy 
+ Container ss-etcd-w1 Healthy 
+ Container ss-etcd-w2 Healthy 
+ Container ss-c-exporter Healthy 
+ Container ss-b-kafka-1 Healthy 
+ Container ss-etcd-c Healthy 
+ Container ss-c-kafka-1 Healthy 
+ Container ss-a-controller-3 Healthy 
+ Container ss-a-broker-1 Healthy 
+ Container ss-etcd-b Healthy 
+ Container ss-toxiproxy Healthy 
+ Container ss-etcd-a Healthy 
+ Container ss-a-controller-2 Healthy 
+ Container ss-a-controller-1 Healthy 
+ Container ss-b-agent Healthy 
+ Container ss-c-agent Healthy 
+ Container ss-c-gateway Healthy 
+ Container ss-dr-2 Healthy 
+ Container ss-c-replicator Healthy 
+ Container ss-b-replicator Healthy 
+ Container ss-b-gateway Healthy 
+ Container ss-dr-1 Healthy 
+ Container ss-dashboard Healthy 
+ Container ss-a-agent Healthy 
+ Container ss-a-replicator Healthy 
+ Container ss-a-gateway Healthy 
+
+ RUN  v2.1.9 /Users/ruthvikpeteti/General/Coding/bios kafka/dashboard
+
+ ✓ src/__tests__/dashboard.test.tsx (17 tests) 321ms
+
+ Test Files  1 passed (1)
+      Tests  17 passed (17)
+   Start at  01:13:20
+   Duration  1.08s (transform 59ms, setup 62ms, collect 134ms, tests 321ms, environment 312ms, prepare 104ms)
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.2, pytest-9.2.0, pluggy-1.7.0
+rootdir: /Users/ruthvikpeteti/General/Coding/bios kafka/policy/tests
+plugins: hypothesis-6.170.14, anyio-4.15.1
+collected 26 items
+
+test_obs.py ..........................                                   [100%]
+
+=============================== warnings summary ===============================
+test_obs.py:9
+  /Users/ruthvikpeteti/General/Coding/bios kafka/policy/tests/test_obs.py:9: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 26 passed, 1 warning in 0.28s =========================
+============================= test session starts ==============================
+platform darwin -- Python 3.14.2, pytest-9.2.0, pluggy-1.7.0
+rootdir: /Users/ruthvikpeteti/General/Coding/bios kafka/policy/tests
+plugins: hypothesis-6.170.14, anyio-4.15.1
+collected 8 items
+
+test_obs_integration.py ........                                         [100%]
+
+========================= 8 passed in 62.93s (0:01:02) =========================
+
+Running 6 tests using 1 worker
+
+  ✓  1 [chromium] › e2e/dashboard.spec.ts:10:1 › an unknown token is rejected and nothing is shown (441ms)
+  ✓  2 [chromium] › e2e/dashboard.spec.ts:18:1 › viewer: all six sections show backend state, and the active region equals the coordinator's (308ms)
+  ✓  3 [chromium] › e2e/dashboard.spec.ts:37:1 › viewer: no administrative controls, and the API refuses a viewer who tries anyway (174ms)
+  ✓  4 [chromium] › e2e/dashboard.spec.ts:48:1 › operator: a failover request needs confirmation, and a healthy region's refusal is shown as a refusal, never as success (343ms)
+  ✓  5 [chromium] › e2e/dashboard.spec.ts:64:1 › stale data is flagged when updates stop, and the flag clears when they resume (12.5s)
+  ✓  6 [chromium] › e2e/dashboard.spec.ts:76:1 › message payloads and credentials are never rendered (6.3s)
+
+  6 passed (22.2s)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › e2e/failover.spec.ts:31:1 › operator workflow: region A fails, the dashboard shows only what the coordinator reports, and the restored region stays fenced (21.2s)
+
+  1 passed (21.7s)
